@@ -1,4 +1,5 @@
 #include "lexer/lexer.h"
+#include "lexer/lexer_errors.h"
 #include "lexer/token.h"
 
 #include <cctype>
@@ -179,7 +180,7 @@ std::vector<Token> Lexer::tokenize() {
 
             // Check for unterminated string
             if (isAtEndOfFile())
-                throw std::exception(); // TODO: prober err handling
+                throw UnterminatedStringException(start, currentCharacterIndex);
 
             // Consume last quote
             consume();
@@ -234,6 +235,10 @@ std::vector<Token> Lexer::tokenize() {
                 else {
                     tokens.push_back(Token(TokenType::IDENTIFIER, start, identifierLen, identifier));
                 }
+            }
+            else {
+                // Uhm what is this character??
+                throw std::exception(); // TODO: err
             }
             break;
         }

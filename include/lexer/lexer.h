@@ -25,7 +25,6 @@ private:
 
     uint16_t start{0};
     uint16_t currentCharacterIndex{0};
-    uint16_t currentLine{0};
 
     bool isAtEndOfFile() const;
     char peek(size_t ahead = 0) const;

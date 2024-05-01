@@ -107,20 +107,20 @@ enum TokenType {
 class Token {
 private:
     const TokenType _type;
-    const uint16_t _sourceBegin;
+    const uint16_t _sourceOffset;
     const uint8_t _length;
     const std::string _literal;
 
 public:
     Token(TokenType type, uint16_t sourceOffset, uint8_t length,
           std::string literal)
-        : _type(type), _sourceBegin(sourceOffset), _length(length),
+        : _type(type), _sourceOffset(sourceOffset), _length(length),
           _literal(literal) {}
 
     const TokenType type() const { return _type; }
-    const uint16_t sourceOffset() const { return _sourceBegin; }
+    const uint16_t sourceOffset() const { return _sourceOffset; }
     const uint8_t length() const { return _length; }
-    const uint16_t sourceEnd() const { return _sourceBegin + _length; }
+    const uint16_t sourceEnd() const { return _sourceOffset + _length; }
     const std::string literal() const { return _literal; }
 };
 
