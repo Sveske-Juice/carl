@@ -6,7 +6,7 @@
 #include <vector>
 
 int main (int argc, char *argv[]) {
-    std::string src{"!= ; \t == # this is a comment \n\"This is my nice string\" ! (55) {!=} 4.42"};
+    std::string src{"!= ; \t == # this is a comment \n\"This is my nice string\" ! (55) {!=} 4.42 not and if myidentifier myvariable while"};
     Lexer lexer(src);
     std::vector<Token> tokens = lexer.tokenize();
     printf("\nTokens:\n");

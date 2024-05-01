@@ -2,7 +2,6 @@
 #include "lexer/token.h"
 
 #include <cctype>
-#include <cstdint>
 #include <cstdio>
 #include <exception>
 #include <string>
@@ -10,7 +9,7 @@
 
 Lexer::Lexer(std::string source) : source{source} {}
 
-bool Lexer::isAtEndOfFile() const {
+inline bool Lexer::isAtEndOfFile() const {
     return currentCharacterIndex >= source.size();
 }
 char Lexer::consume() { return source[currentCharacterIndex++]; }
@@ -219,8 +218,22 @@ std::vector<Token> Lexer::tokenize() {
                 tokens.push_back(
                     Token(TokenType::NUMBER, start, numberLen, numberLiteral));
             }
-            // Lex identifiers
+            // Lex keywords & identifiers (variables, functions etc.)
             else if (std::isalpha(c)) {
+                while (std::isalpha(peek()))
+                    consume();
+
+                size_t identifierLen = currentCharacterIndex - start;
+                std::string identifier{source.begin() + start, source.begin() + start + identifierLen};
+
+                // Check if it's a reserved keyword
+                auto it = keywords.find(identifier);
+                if (it != keywords.end()) {
+                    tokens.push_back(Token(it->second, start, identifierLen, identifier));
+                }
+                else {
+                    tokens.push_back(Token(TokenType::IDENTIFIER, start, identifierLen, identifier));
+                }
             }
             break;
         }
