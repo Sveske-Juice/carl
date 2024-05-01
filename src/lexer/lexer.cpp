@@ -1,6 +1,8 @@
 #include "lexer/lexer.h"
 #include "lexer/token.h"
 
+#include <cctype>
+#include <cstdint>
 #include <cstdio>
 #include <exception>
 #include <string>
@@ -189,13 +191,37 @@ std::vector<Token> Lexer::tokenize() {
             auto stringEnd = source.begin() + start + stringLen;
             std::string literal{stringStart, stringEnd};
 
-            tokens.push_back(Token(TokenType::STRING, start,
-                                   stringLen,
-                                   literal));
+            tokens.push_back(
+                Token(TokenType::STRING, start, stringLen + 1, literal));
             break;
         }
         default:
-            // TODO: lex numbers
+            // Lex numbers
+            if (std::isdigit(c)) {
+                while (std::isdigit(peek()))
+                    consume(); // Consume all numbers
+
+                // Look for fractional part
+                if (peek() == '.') {
+                    consume(); // Consume delimiter
+
+                    // A delimiter was added but no fractional part was provided, ex: '5.'
+                    if (!std::isdigit(peek()))
+                        throw std::exception(); // TODO: err
+
+                    while (std::isdigit(peek()))
+                        consume(); // Consume fractional part
+                }
+
+                size_t numberLen = currentCharacterIndex - start;
+                std::string numberLiteral{source.begin() + start,
+                                          source.begin() + start + numberLen};
+                tokens.push_back(
+                    Token(TokenType::NUMBER, start, numberLen, numberLiteral));
+            }
+            // Lex identifiers
+            else if (std::isalpha(c)) {
+            }
             break;
         }
     }
