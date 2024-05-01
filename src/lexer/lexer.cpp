@@ -180,7 +180,7 @@ std::vector<Token> Lexer::tokenize() {
 
             // Check for unterminated string
             if (isAtEndOfFile())
-                throw UnterminatedStringException(start, currentCharacterIndex);
+                throw UnterminatedStringException(start, currentCharacterIndex - start);
 
             // Consume last quote
             consume();
@@ -207,7 +207,7 @@ std::vector<Token> Lexer::tokenize() {
 
                     // A delimiter was added but no fractional part was provided, ex: '5.'
                     if (!std::isdigit(peek()))
-                        throw std::exception(); // TODO: err
+                        throw IncompleteDelimiter(start, currentCharacterIndex - start);
 
                     while (std::isdigit(peek()))
                         consume(); // Consume fractional part
