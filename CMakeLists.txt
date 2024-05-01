@@ -18,3 +18,7 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 # Include all headers
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+add_compile_options(
+    "-Wall" "-Wpedantic" "-Wextra" "-fexceptions"
+    "$<$<CONFIG:DEBUG>:-DNDEBUG;>"
+)
