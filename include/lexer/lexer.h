@@ -19,6 +19,7 @@ class Lexer {
 public:
     Lexer(std::string source);
     std::vector<Token> tokenize();
+    static std::string tokensToString(const std::vector<Token>& tokens);
 
 private:
     const std::string source;

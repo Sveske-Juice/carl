@@ -4,7 +4,6 @@
 
 #include <cctype>
 #include <cstdio>
-#include <exception>
 #include <string>
 #include <vector>
 
@@ -247,4 +246,12 @@ std::vector<Token> Lexer::tokenize() {
     tokens.push_back(Token(TokenType::END_OF_FILE, start,
                            start - currentCharacterIndex, std::string{"\0"}));
     return tokens;
+}
+
+std::string Lexer::tokensToString(const std::vector<Token>& tokens) {
+    std::string output;
+    for (Token token : tokens) {
+        output += std::format("{}('{}')\n", TokenTypesToString[token.type()], token.literal());
+    }
+    return output;
 }

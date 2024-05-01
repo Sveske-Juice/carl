@@ -11,12 +11,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Include all source files
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
+file(GLOB_RECURSE SRC_FILES main.cpp src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Include all headers
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+add_subdirectory(tests)
 
 add_compile_options(
     "-Wall" "-Wpedantic" "-Wextra" "-fexceptions"
