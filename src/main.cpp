@@ -9,7 +9,7 @@
 #include <vector>
 
 int main (int argc, char *argv[]) {
-    std::string src{"!= ; \t == # this is a comment \n\"This is my nice string\" ! (55) {!=} 4.42 not and if myidentifier myvariable while \"this is an unterminated string \" 5."};
+    std::string src{"!= ; ? \t == # this is a comment \n\"This is my nice string\" ! (55) {!=} 4.42 not and if myidentifier myvariable while \"this is an unterminated string \" 5."};
     Lexer lexer(src);
 
     std::vector<Token> tokens;

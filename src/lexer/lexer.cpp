@@ -180,7 +180,7 @@ std::vector<Token> Lexer::tokenize() {
 
             // Check for unterminated string
             if (isAtEndOfFile())
-                throw UnterminatedStringException(start, currentCharacterIndex - start);
+                throw UnterminatedString(start, currentCharacterIndex - start);
 
             // Consume last quote
             consume();
@@ -238,7 +238,7 @@ std::vector<Token> Lexer::tokenize() {
             }
             else {
                 // Uhm what is this character??
-                throw std::exception(); // TODO: err
+                throw UnrecognizedCharacter(start, currentCharacterIndex - start);
             }
             break;
         }

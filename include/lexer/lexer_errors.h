@@ -47,10 +47,10 @@ class LexerException : public std::exception {
 };
 
 
-class UnterminatedStringException : public LexerException {
+class UnterminatedString : public LexerException {
     public:
-        UnterminatedStringException(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
-        UnterminatedStringException(const Token& token) : LexerException(token) {}
+        UnterminatedString(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
+        UnterminatedString(const Token& token) : LexerException(token) {}
 
         const uint8_t error_code() const noexcept override {
             return 10;
@@ -72,6 +72,20 @@ class IncompleteDelimiter : public LexerException {
 
         const std::string what(std::string_view source) const noexcept override {
             return std::string{locationPrefix(source) + " Unfinished delimiter"};
+        }
+};
+
+class UnrecognizedCharacter : public LexerException {
+    public:
+        UnrecognizedCharacter(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
+        UnrecognizedCharacter(const Token& token) : LexerException(token) {}
+
+        const uint8_t error_code() const noexcept override {
+            return 11;
+        }
+
+        const std::string what(std::string_view source) const noexcept override {
+            return std::string{locationPrefix(source) + " Unrecognized Character"};
         }
 };
 
