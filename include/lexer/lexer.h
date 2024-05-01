@@ -3,16 +3,16 @@
 
 #include "token.h"
 
-#include <string_view>
+#include <string>
 #include <vector>
 
 class Lexer {
     public:
-        Lexer(std::string_view source);
+        Lexer(std::string source);
         std::vector<Token> tokenize();
 
     private:
-        const std::string_view source;
+        const std::string source;
 
         uint16_t start{0};
         uint16_t currentCharacterIndex{0};
@@ -20,7 +20,7 @@ class Lexer {
 
         bool isAtEndOfFile() const;
         char consume();
-        char peek(size_t ahead = 1) const;
+        char peek(size_t ahead = 0) const;
         bool match(char expected);
 };
 

@@ -3,10 +3,10 @@
 
 #include <cstdio>
 #include <exception>
-#include <string_view>
+#include <string>
 #include <vector>
 
-Lexer::Lexer(std::string_view source) : source{source} {}
+Lexer::Lexer(std::string source) : source{source} {}
 
 bool Lexer::isAtEndOfFile() const {
     return currentCharacterIndex >= source.size();
@@ -43,77 +43,77 @@ std::vector<Token> Lexer::tokenize() {
         case '(':
             tokens.push_back(Token(TokenType::LPAREN, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"("}));
             break;
         case ')':
             tokens.push_back(Token(TokenType::RPAREN, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{")"}));
             break;
         case '[':
             tokens.push_back(Token(TokenType::LSQUARE, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"["}));
             break;
         case ']':
             tokens.push_back(Token(TokenType::RSQUARE, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"]"}));
             break;
         case '{':
             tokens.push_back(Token(TokenType::LCURLY, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"{"}));
             break;
         case '}':
             tokens.push_back(Token(TokenType::RCURLY, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"}"}));
             break;
         case ',':
             tokens.push_back(Token(TokenType::COMMA, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{","}));
             break;
         case '.':
             tokens.push_back(Token(TokenType::DOT, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"."}));
             break;
         case '-':
             tokens.push_back(Token(TokenType::MINUS, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"-"}));
             break;
         case '+':
             tokens.push_back(Token(TokenType::PLUS, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"+"}));
             break;
         case ';':
             tokens.push_back(Token(TokenType::SEMICOLON, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{";"}));
             break;
         case '*':
             tokens.push_back(Token(TokenType::STAR, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"*"}));
             break;
         case ':':
             tokens.push_back(Token(TokenType::COLON, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{":"}));
             break;
         case '/':
             tokens.push_back(Token(TokenType::SLASH, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"/"}));
             break;
         case '^':
             tokens.push_back(Token(TokenType::EXPONENT, start,
                                    start - currentCharacterIndex,
-                                   std::string_view{&c, 1}));
+                                   std::string{"^"}));
             break;
 
         // Ignore comments
@@ -127,43 +127,43 @@ std::vector<Token> Lexer::tokenize() {
             if (match('='))
                 tokens.push_back(Token(TokenType::BANG_EQUALS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"!="}));
             else
                 tokens.push_back(Token(TokenType::BANG, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"!"}));
             break;
         case '=':
             if (match('='))
                 tokens.push_back(Token(TokenType::EQUALS_EQUALS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"=="}));
             else
                 tokens.push_back(Token(TokenType::EQUALS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"="}));
             break;
 
         case '<':
             if (match('='))
                 tokens.push_back(Token(TokenType::LESS_EQUALS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"<="}));
             else
                 tokens.push_back(Token(TokenType::LESS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{"<"}));
             break;
 
         case '>':
             if (match('='))
                 tokens.push_back(Token(TokenType::GREATER_EQUALS, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{">="}));
             else
                 tokens.push_back(Token(TokenType::GREATER, start,
                                        start - currentCharacterIndex,
-                                       std::string_view{&c, 1}));
+                                       std::string{">"}));
             break;
 
         case ' ':
@@ -182,14 +182,16 @@ std::vector<Token> Lexer::tokenize() {
 
             // Consume last quote
             consume();
-            consume();
 
             // Create string literal
             auto stringStart = source.begin() + start + 1;
-            auto stringEnd = stringStart + (start - currentCharacterIndex);
+            size_t stringLen = currentCharacterIndex - start - 1;
+            auto stringEnd = source.begin() + start + stringLen;
+            std::string literal{stringStart, stringEnd};
+
             tokens.push_back(Token(TokenType::STRING, start,
-                                   start - currentCharacterIndex,
-                                   std::string_view{stringStart, stringEnd}));
+                                   stringLen,
+                                   literal));
             break;
         }
         default:
@@ -199,6 +201,6 @@ std::vector<Token> Lexer::tokenize() {
     }
 
     tokens.push_back(Token(TokenType::END_OF_FILE, start,
-                           start - currentCharacterIndex, std::string_view{"\0"}));
+                           start - currentCharacterIndex, std::string{"\0"}));
     return tokens;
 }

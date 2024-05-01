@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <cstdint>
+#include <string>
 #include <string_view>
 
 static std::string_view TokenTypesToString[] = {
@@ -108,11 +109,11 @@ private:
     const TokenType _type;
     const uint16_t _sourceBegin;
     const uint8_t _length;
-    const std::string_view _literal;
+    const std::string _literal;
 
 public:
     Token(TokenType type, uint16_t sourceOffset, uint8_t length,
-          std::string_view literal)
+          std::string literal)
         : _type(type), _sourceBegin(sourceOffset), _length(length),
           _literal(literal) {}
 
@@ -120,7 +121,7 @@ public:
     const uint16_t sourceOffset() const { return _sourceBegin; }
     const uint8_t length() const { return _length; }
     const uint16_t sourceEnd() const { return _sourceBegin + _length; }
-    const std::string_view literal() const { return _literal; }
+    const std::string literal() const { return _literal; }
 };
 
 #endif
