@@ -116,6 +116,11 @@ std::vector<Token> Lexer::tokenize() {
                                    start - currentCharacterIndex,
                                    std::string{"^"}));
             break;
+        case '%':
+            tokens.push_back(Token(TokenType::MODULUS, start,
+                                   start - currentCharacterIndex,
+                                   std::string{"%"}));
+            break;
 
         // Ignore comments
         case '#':
