@@ -209,9 +209,11 @@ std::vector<Token> Lexer::tokenize() {
                 if (peek() == '.') {
                     consume(); // Consume delimiter
 
-                    // A delimiter was added but no fractional part was provided, ex: '5.'
+                    // A delimiter was added but no fractional part was
+                    // provided, ex: '5.'
                     if (!std::isdigit(peek()))
-                        throw IncompleteDelimiter(start, currentCharacterIndex - start);
+                        throw IncompleteDelimiter(start, currentCharacterIndex -
+                                                             start);
 
                     while (std::isdigit(peek()))
                         consume(); // Consume fractional part
@@ -229,20 +231,22 @@ std::vector<Token> Lexer::tokenize() {
                     consume();
 
                 size_t identifierLen = currentCharacterIndex - start;
-                std::string identifier{source.begin() + start, source.begin() + start + identifierLen};
+                std::string identifier{source.begin() + start,
+                                       source.begin() + start + identifierLen};
 
                 // Check if it's a reserved keyword
                 auto it = keywords.find(identifier);
                 if (it != keywords.end()) {
-                    tokens.push_back(Token(it->second, start, identifierLen, identifier));
+                    tokens.push_back(
+                        Token(it->second, start, identifierLen, identifier));
+                } else {
+                    tokens.push_back(Token(TokenType::IDENTIFIER, start,
+                                           identifierLen, identifier));
                 }
-                else {
-                    tokens.push_back(Token(TokenType::IDENTIFIER, start, identifierLen, identifier));
-                }
-            }
-            else {
+            } else {
                 // Uhm what is this character??
-                throw UnrecognizedCharacter(start, currentCharacterIndex - start);
+                throw UnrecognizedCharacter(start,
+                                            currentCharacterIndex - start);
             }
             break;
         }
@@ -253,10 +257,11 @@ std::vector<Token> Lexer::tokenize() {
     return tokens;
 }
 
-std::string Lexer::tokensToString(const std::vector<Token>& tokens) {
+std::string Lexer::tokensToString(const std::vector<Token> &tokens) {
     std::string output;
     for (Token token : tokens) {
-        output += std::format("{}('{}')\n", TokenTypesToString[token.type()], token.literal());
+        output += std::format("{}('{}')\n", TokenTypesToString[token.type()],
+                              token.literal());
     }
     return output;
 }

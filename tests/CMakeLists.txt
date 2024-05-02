@@ -20,4 +20,4 @@ add_executable(tests ${SRC_FILES} ${TEST_SRC_FILES})
 # Include all headers
 target_include_directories(tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain -lfmt)
