@@ -4,6 +4,7 @@
 #include <string>
 
 #include "lexer/lexer.h"
+#include "lexer/lexer_errors.h"
 #include "lexer/token.h"
 
 TEST_CASE("EOF") {
@@ -61,3 +62,17 @@ TEST_CASE("Testing single tokens", "[Single tokens]") {
     }
 }
 
+TEST_CASE("Testing Lexer Error Handling", "[Lexer errors]") {
+    SECTION("Unterminated String (10)") {
+        std::string src{"\"Hello World!"}; Lexer lexer{src};
+        CHECK_THROWS_AS(lexer.tokenize(), UnterminatedString);
+    }
+    SECTION("Incomplete Delimter (11)") {
+        std::string src{"69."}; Lexer lexer{src};
+        CHECK_THROWS_AS(lexer.tokenize(), IncompleteDelimiter);
+    }
+    SECTION("Unrecognized Character (12)") {
+        std::string src{"?"}; Lexer lexer{src};
+        CHECK_THROWS_AS(lexer.tokenize(), UnrecognizedCharacter);
+    }
+}

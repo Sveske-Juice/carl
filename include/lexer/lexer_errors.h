@@ -81,7 +81,7 @@ class UnrecognizedCharacter : public LexerException {
         UnrecognizedCharacter(const Token& token) : LexerException(token) {}
 
         const uint8_t error_code() const noexcept override {
-            return 11;
+            return 12;
         }
 
         const std::string what(std::string_view source) const noexcept override {
