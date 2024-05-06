@@ -1,19 +1,28 @@
 #include "parser/ast_printer.h"
 #include "parser/expression.h"
 
+#include <cassert>
 #include <fmt/core.h>
 #include <string>
 
 std::string AstPrinter::print(Expression &expression) {
-    return expression.accept(*this);
+    expression.accept(*this);
+    assert(workingStack.size() == 1);
+    return workingStack.top();
 }
 
-std::string AstPrinter::visitLiteralExpression(LiteralExpression &expression) {
-    return expression.toString();
+void AstPrinter::visitLiteralExpression(LiteralExpression &expression) {
+    workingStack.push(expression.literal());
 }
 
-std::string AstPrinter::visitBinaryExpression(BinaryExpression &expression) {
-    return fmt::format("({} {} {})", expression.left().accept(*this),
-                       expression.op().literal(),
-                       expression.right().accept(*this));
+void AstPrinter::visitBinaryExpression(BinaryExpression &expression) {
+    expression.left().accept(*this);
+    std::string l = workingStack.top();
+    workingStack.pop();
+
+    expression.right().accept(*this);
+    std::string r = workingStack.top();
+    workingStack.pop();
+
+    workingStack.push(fmt::format("({} {} {})", l, expression.op().literal(), r));
 }
