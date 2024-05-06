@@ -6,14 +6,15 @@
 #include <stack>
 #include <string>
 
-class AstPrinter : public IExpressionVisitor{
-    private:
-        std::stack<std::string> workingStack;
+class AstPrinter : public IExpressionVisitor {
+private:
+    std::stack<std::string> workingStack;
 
-    public:
-        std::string print(Expression& expression);
-        void visitLiteralExpression(LiteralExpression& expression) override;
-        void visitBinaryExpression(BinaryExpression& expression) override;
+public:
+    std::string print(Expression &expression);
+    void visitLiteralExpression(LiteralExpression &expression) override;
+    void visitBinaryExpression(BinaryExpression &expression) override;
+    void visitUnaryExpression(UnaryExpression &expression) override;
 };
 
 #endif

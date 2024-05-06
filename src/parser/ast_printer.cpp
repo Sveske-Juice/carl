@@ -26,3 +26,11 @@ void AstPrinter::visitBinaryExpression(BinaryExpression &expression) {
 
     workingStack.push(fmt::format("({} {} {})", l, expression.op().literal(), r));
 }
+
+void AstPrinter::visitUnaryExpression(UnaryExpression &expression) {
+    expression.operand().accept(*this);
+    std::string o = workingStack.top();
+    workingStack.pop();
+
+    workingStack.push(fmt::format("{}{}", expression.op().literal(), o));
+}

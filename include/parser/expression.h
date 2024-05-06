@@ -5,6 +5,7 @@
 #include "parser/iexpression_visitor.h"
 
 #include <fmt/core.h>
+#include <memory>
 #include <string>
 
 class Expression {
@@ -27,22 +28,40 @@ class LiteralExpression : public Expression {
 
 class BinaryExpression : public Expression {
     private:
-        Expression& left_;
+        std::unique_ptr<Expression> left_;
         Token op_;
-        Expression& right_;
+        std::unique_ptr<Expression> right_;
 
     public:
-        BinaryExpression(Expression &left, Token token,
-                         Expression &right)
-            : left_(left), op_(std::move(token)), right_(right) {}
+        BinaryExpression(std::unique_ptr<Expression> left, Token token,
+                         std::unique_ptr<Expression> right)
+            : left_(std::move(left)), op_(std::move(token)), right_(std::move(right)) {}
 
         void accept(IExpressionVisitor& visitor) override {
             visitor.visitBinaryExpression(*this);
         }
 
-        Expression& left() { return left_; }
+        Expression& left() { return *left_; }
         Token& op() { return op_; }
-        Expression& right() { return right_; }
+        Expression& right() { return *right_; }
+};
+
+class UnaryExpression : public Expression {
+    private:
+        Token op_;
+        std::unique_ptr<Expression> operand_;
+
+    public:
+        UnaryExpression(Token token,
+                         std::unique_ptr<Expression> right)
+            : op_(std::move(token)), operand_(std::move(right)) {}
+
+        void accept(IExpressionVisitor& visitor) override {
+            visitor.visitUnaryExpression(*this);
+        }
+
+        Token& op() { return op_; }
+        Expression& operand() { return *operand_; }
 };
 
 #endif
