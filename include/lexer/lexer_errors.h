@@ -1,6 +1,7 @@
 #ifndef LEXER_ERRORS_H
 #define LEXER_ERRORS_H
 
+#include "carl_constants.h"
 #include "lexer/token.h"
 
 #include <cstdint>
@@ -43,7 +44,7 @@ class LexerException : public std::exception {
         LexerException(const Token& token) : sourceOffset_{token.sourceOffset()}, length_{token.length()} {}
 
         virtual const std::string what(std::string_view source) const noexcept = 0;
-        virtual const uint8_t error_code() const noexcept = 0;
+        virtual const LexerError error_code() const noexcept = 0;
 };
 
 
@@ -52,8 +53,8 @@ class UnterminatedString : public LexerException {
         UnterminatedString(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
         UnterminatedString(const Token& token) : LexerException(token) {}
 
-        const uint8_t error_code() const noexcept override {
-            return 10;
+        const LexerError error_code() const noexcept override {
+            return LexerError::UNTERMINATED_STRING;
         }
 
         const std::string what(std::string_view source) const noexcept override {
@@ -66,8 +67,8 @@ class IncompleteDelimiter : public LexerException {
         IncompleteDelimiter(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
         IncompleteDelimiter(const Token& token) : LexerException(token) {}
 
-        const uint8_t error_code() const noexcept override {
-            return 11;
+        const LexerError error_code() const noexcept override {
+            return LexerError::INCOMPLETE_DELIMITER;
         }
 
         const std::string what(std::string_view source) const noexcept override {
@@ -80,8 +81,8 @@ class UnrecognizedCharacter : public LexerException {
         UnrecognizedCharacter(const uint16_t sourceOffset, const uint16_t length) : LexerException(sourceOffset, length) {}
         UnrecognizedCharacter(const Token& token) : LexerException(token) {}
 
-        const uint8_t error_code() const noexcept override {
-            return 12;
+        const LexerError error_code() const noexcept override {
+            return LexerError::UNRECOGNIZED_CHARACTER;
         }
 
         const std::string what(std::string_view source) const noexcept override {

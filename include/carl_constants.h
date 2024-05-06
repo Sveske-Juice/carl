@@ -1,0 +1,10 @@
+#ifndef CARL_CONSTANTS
+#define CARL_CONSTANTS
+
+enum LexerError {
+    UNTERMINATED_STRING = 10,
+    INCOMPLETE_DELIMITER = 11,
+    UNRECOGNIZED_CHARACTER = 12,
+};
+
+#endif
