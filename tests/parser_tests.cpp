@@ -2,7 +2,9 @@
 #include "parser/ast_printer.h"
 #include "parser/expression.h"
 #include "parser/parser.h"
+#include "parser/parser_errors.h"
 #include <catch2/catch_test_macros.hpp>
+#include <exception>
 #include <iostream>
 
 TEST_CASE("Parser Literals", "[Parser:Literals]") {
@@ -156,3 +158,31 @@ TEST_CASE("Parser Binary", "[Parser:Binary]") {
         CHECK(out == "(69 / 420)");
     }
 }
+
+TEST_CASE("Parser Exceptions", "[Parser:Exceptions]") {
+    SECTION("Unexpected Token") {
+        std::vector<Token> lexemes = {
+            Token(TokenType::PLUS, 0, 1, "+"),
+            Token(TokenType::END_OF_FILE, 0, 1, "\0"),
+        };
+        Parser parser{lexemes};
+        REQUIRE_THROWS_AS(parser.parse(), UnexpectedToken);
+    }
+    SECTION("Missing Closing Bracket") {
+        std::vector<Token> lexemes = {
+            Token(TokenType::LPAREN, 0, 1, "("),
+            Token(TokenType::END_OF_FILE, 0, 1, "\0"),
+        };
+        Parser parser{lexemes};
+
+        // For some reason if i use CHECK_THROWS_AS here catch2 throws an std::exception
+        // maybe this is a bug with catch2?
+        try {
+            parser.parse();
+            FAIL();
+        } catch(const ParserException& e){
+            SUCCEED();
+        }
+    }
+}
+

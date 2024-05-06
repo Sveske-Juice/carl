@@ -1,5 +1,6 @@
 #include "parser/parser.h"
 #include "parser/expression.h"
+#include "parser/parser_errors.h"
 
 #include <exception>
 #include <initializer_list>
@@ -71,24 +72,26 @@ std::unique_ptr<Expression> Parser::primary() {
     if (matchAny({TokenType::LPAREN})) {
         std::unique_ptr<Expression> innerExpression = expression();
 
+        uint16_t length{0};
         do {
-            // Consumes token in match...
+            // Consumes token in matchAny()...
+            length += peek().length();
         } while(matchAny({TokenType::RPAREN}));
 
         // Verify it wasn't a EOF token
         Token token = previous();
         if (token.type() != TokenType::RPAREN) {
-            throw std::exception(); // TODO: parser err
+            throw MissingClosingBracket(peek().sourceOffset(), length);
         }
         return innerExpression;
     }
 
-    throw std::exception();
+    throw UnexpectedToken(peek());
 }
 
 bool Parser::matchAny(std::initializer_list<TokenType> tokenTypes) {
     for (TokenType type : tokenTypes) {
-        if (!isAtEnd() && lexemes[currentIndex].type() == type) {
+        if (!isAtEnd() && peek().type() == type) {
             consume();
             return true;
         }
@@ -96,18 +99,18 @@ bool Parser::matchAny(std::initializer_list<TokenType> tokenTypes) {
     return false;
 }
 
-void Parser::consume() {
+inline void Parser::consume() {
     this->currentIndex++;
 }
 
-bool Parser::isAtEnd() const {
+inline bool Parser::isAtEnd() const {
     return lexemes[currentIndex].type() == TokenType::END_OF_FILE;
 }
 
-Token Parser::previous() const {
+inline Token Parser::previous() const {
     return lexemes[currentIndex - 1];
 }
 
-Token Parser::peek() const {
+inline Token Parser::peek() const {
     return lexemes[currentIndex];
 }

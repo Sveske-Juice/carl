@@ -1,6 +1,7 @@
 #include "lexer/lexer.h"
 #include "lexer/lexer_errors.h"
 #include "lexer/token.h"
+#include "parser/parser_errors.h"
 
 #include <cstdio>
 #include <iostream>
@@ -21,6 +22,12 @@ int main (int argc, char *argv[]) {
         std::cerr << "Lexer Error: " << le.what(sv) << std::endl;
 
         exit(le.error_code());
+    }
+    catch(const ParserException& pe) {
+        std::string_view sv{src.begin(), src.end()};
+        std::cerr << "Parser Error: " << pe.what(sv) << std::endl;
+
+        exit(pe.error_code());
     }
 
     printf("\nTokens:\n");

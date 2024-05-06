@@ -7,4 +7,9 @@ enum LexerError {
     UNRECOGNIZED_CHARACTER = 12,
 };
 
+enum ParserError {
+    UNEXPECTED_TOKEN = 100,
+    MISSING_CLOSING_BRACKET = 101,
+};
+
 #endif
