@@ -48,7 +48,7 @@ TEST_CASE("Intepreter Literal tests", "[Intepreter:Literal]") {
     }
 }
 
-TEST_CASE("Intepreter Unary Operations", "[Interpreter:Unary]") {
+TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
     SECTION("Negate") {
         std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::NUMBER, "69");
         std::unique_ptr<Expression> u = std::make_unique<UnaryExpression>(Token(TokenType::MINUS, 0, 1, "-"), std::move(l));
@@ -107,5 +107,51 @@ TEST_CASE("Intepreter Unary Operations", "[Interpreter:Unary]") {
             REQUIRE(res.type == ValueType::VALUE_BOOL);
             REQUIRE(res.number == correct);
         }
+    }
+}
+
+TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
+    SECTION("Plus") {
+        std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::NUMBER, "69");
+        std::unique_ptr<LiteralExpression> r = std::make_unique<LiteralExpression>(TokenType::NUMBER, "420");
+        std::unique_ptr<Expression> bin = std::make_unique<BinaryExpression>(std::move(l), Token(TokenType::PLUS, 0, 1, "+"), std::move(r));
+
+        Interpreter interpreter{std::move(bin)};
+        Value res = interpreter.interpret();
+        REQUIRE(res.type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.number == 69 + 420);
+    }
+
+    SECTION("Minus") {
+        std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::NUMBER, "69");
+        std::unique_ptr<LiteralExpression> r = std::make_unique<LiteralExpression>(TokenType::NUMBER, "420");
+        std::unique_ptr<Expression> bin = std::make_unique<BinaryExpression>(std::move(l), Token(TokenType::MINUS, 0, 1, "-"), std::move(r));
+
+        Interpreter interpreter{std::move(bin)};
+        Value res = interpreter.interpret();
+        REQUIRE(res.type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.number == 69 - 420);
+    }
+
+    SECTION("Multiplication") {
+        std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::NUMBER, "69");
+        std::unique_ptr<LiteralExpression> r = std::make_unique<LiteralExpression>(TokenType::NUMBER, "420");
+        std::unique_ptr<Expression> bin = std::make_unique<BinaryExpression>(std::move(l), Token(TokenType::STAR, 0, 1, "*"), std::move(r));
+
+        Interpreter interpreter{std::move(bin)};
+        Value res = interpreter.interpret();
+        REQUIRE(res.type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.number == 69 * 420);
+    }
+
+    SECTION("Division") {
+        std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::NUMBER, "69");
+        std::unique_ptr<LiteralExpression> r = std::make_unique<LiteralExpression>(TokenType::NUMBER, "420");
+        std::unique_ptr<Expression> bin = std::make_unique<BinaryExpression>(std::move(l), Token(TokenType::SLASH, 0, 1, "/"), std::move(r));
+
+        Interpreter interpreter{std::move(bin)};
+        Value res = interpreter.interpret();
+        REQUIRE(res.type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.number == (double)69.0 / (double)420.0);
     }
 }
