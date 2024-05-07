@@ -128,33 +128,49 @@ void Interpreter::visitBinaryExpression(BinaryExpression &expression) {
 
     const Token &op = expression.op();
 
-    if (l.type != VALUE_NUMBER || r.type != VALUE_NUMBER)
-        throw TypeMismatch(
-            op, "Type Mismatch, because can atm. only operate on numbers");
-
     Value result;
-    result.type = ValueType::VALUE_NUMBER;
+    if (l.type == VALUE_NUMBER && r.type == VALUE_NUMBER) {
+        result.type = ValueType::VALUE_NUMBER;
+        switch (op.type()) {
+        case PLUS:
+            result.number = l.number + r.number;
+            break;
 
-    switch (op.type()) {
-    case PLUS:
-        result.number = l.number + r.number;
-        break;
+        case MINUS:
+            result.number = l.number - r.number;
+            break;
 
-    case MINUS:
-        result.number = l.number - r.number;
-        break;
+        case STAR:
+            result.number = l.number * r.number;
+            break;
 
-    case STAR:
-        result.number = l.number * r.number;
-        break;
+        case SLASH:
+            result.number = l.number / r.number;
+            break;
 
-    case SLASH:
-        result.number = l.number / r.number;
-        break;
+        default:
+            throw std::exception(); // TODO: interpreter bug
+        }
+    // String concat
+    } else if (IS_STRING(l) && IS_STRING(r) && op.type() == TokenType::PLUS) {
+        ObjString* left = reinterpret_cast<ObjString *>(l.obj);
+        ObjString* right = reinterpret_cast<ObjString *>(r.obj);
 
-    default:
-        throw std::exception(); // TODO: interpreter bug
+        size_t resultLength = left->length + right->length;
+        char * resultStr = new char[resultLength + 1];
+        std::memcpy(resultStr, left->chars, left->length);
+        std::memcpy(resultStr + left->length, right->chars, right->length);
+        resultStr[resultLength] = '\0';
+
+        ObjString* resultObjString = new ObjString();
+        resultObjString->length = resultLength;
+        resultObjString->chars = resultStr;
+        resultObjString->obj.objType = ObjectType::OBJ_STRING;
+        result.type = ValueType::VALUE_OBJ;
+        result.obj = reinterpret_cast<Obj *>(resultObjString);
+    } else {
+        throw TypeMismatch(
+            op, "Type Mismatch, binary operation expects two numbers or two strings");
     }
-
     workingStack.push(result);
 }

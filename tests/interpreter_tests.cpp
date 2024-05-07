@@ -154,4 +154,17 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         REQUIRE(res.type == ValueType::VALUE_NUMBER);
         REQUIRE(res.number == (double)69.0 / (double)420.0);
     }
+
+    SECTION("String Concat") {
+        std::unique_ptr<LiteralExpression> l = std::make_unique<LiteralExpression>(TokenType::STRING, "Hello ");
+        std::unique_ptr<LiteralExpression> r = std::make_unique<LiteralExpression>(TokenType::STRING, "World!");
+        std::unique_ptr<Expression> bin = std::make_unique<BinaryExpression>(std::move(l), Token(TokenType::PLUS, 0, 1, "+"), std::move(r));
+
+        Interpreter interpreter{std::move(bin)};
+        Value res = interpreter.interpret();
+        REQUIRE(res.type == ValueType::VALUE_OBJ);
+
+        ObjString* resultStr = reinterpret_cast<ObjString *>(res.obj);
+        REQUIRE(strcmp("Hello World!", resultStr->chars) == 0);
+    }
 }
