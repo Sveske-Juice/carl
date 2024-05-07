@@ -66,7 +66,7 @@ std::unique_ptr<Expression> Parser::unary() {
 std::unique_ptr<Expression> Parser::primary() {
     if (matchAny({TokenType::FALSE, TokenType::TRUE, TokenType::NUMBER, TokenType::STRING})) {
         Token literal = previous();
-        return std::make_unique<LiteralExpression>(LiteralExpression(literal.literal()));
+        return std::make_unique<LiteralExpression>(LiteralExpression(literal.type(), literal.literal()));
     }
 
     if (matchAny({TokenType::LPAREN})) {

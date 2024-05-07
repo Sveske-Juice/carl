@@ -16,14 +16,17 @@ class Expression {
 // Concrete expressions
 class LiteralExpression : public Expression {
     private:
+        const TokenType literalType_; // Can be NUMBER, STRING, TRUE, FALSE, NULL
         const std::string literal_;
 
     public:
-        LiteralExpression(std::string literal) : literal_{std::move(literal)} {}
-        void accept(IExpressionVisitor& visitor) override {
+        LiteralExpression(TokenType literalType, std::string literal)
+            : literalType_(literalType), literal_(std::move(literal)) {}
+        void accept(IExpressionVisitor &visitor) override {
             visitor.visitLiteralExpression(*this);
         }
         std::string literal() const { return literal_; }
+        TokenType type() const { return literalType_; }
 };
 
 class BinaryExpression : public Expression {
