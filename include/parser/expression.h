@@ -55,9 +55,9 @@ class UnaryExpression : public Expression {
         std::unique_ptr<Expression> operand_;
 
     public:
-        UnaryExpression(Token token,
+        UnaryExpression(Token op,
                          std::unique_ptr<Expression> right)
-            : op_(std::move(token)), operand_(std::move(right)) {}
+            : op_(std::move(op)), operand_(std::move(right)) {}
 
         void accept(IExpressionVisitor& visitor) override {
             visitor.visitUnaryExpression(*this);

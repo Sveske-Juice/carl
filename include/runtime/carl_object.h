@@ -26,6 +26,7 @@ struct ObjString {
 
     ~ObjString() {
         delete chars;
+        chars = nullptr;
     }
 };
 
@@ -50,6 +51,7 @@ struct Value {
             default:
                 throw std::exception();
         }
+        obj = nullptr;
     }
 };
 

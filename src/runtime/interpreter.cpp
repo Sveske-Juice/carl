@@ -2,7 +2,9 @@
 #include "lexer/token.h"
 #include "parser/expression.h"
 #include "runtime/carl_object.h"
+#include "runtime/runtime_errors.h"
 #include <cstring>
+#include <fmt/core.h>
 #include <iostream>
 
 Interpreter::Interpreter(std::unique_ptr<Expression> _rootExpression) : rootExpression(std::move(_rootExpression)) {}
@@ -71,12 +73,43 @@ void Interpreter::visitLiteralExpression(LiteralExpression& expression) {
         }
 
         default:
-            throw std::exception(); // TODO: runtime err
+            throw std::exception(); // TODO: interpreter bug
     }
 }
 
 void Interpreter::visitUnaryExpression(UnaryExpression& expression) {
-    // TODO: 
+    // Eval operand
+    expression.operand().accept(*this);
+    const Value& operand = workingStack.top();
+    workingStack.pop();
+    const Token& op = expression.op();
+
+    switch (op.type()) {
+        case TokenType::MINUS:
+            if (operand.type != ValueType::VALUE_NUMBER)
+                throw TypeMismatch(op, "Type Mismatch, because can't negate a type that's not a number");
+
+            Value negated;
+            negated.type = ValueType::VALUE_NUMBER;
+            negated.number = -operand.number;
+
+            workingStack.push(negated);
+            break;
+
+        case TokenType::BANG:
+            if (operand.type != ValueType::VALUE_BOOL)
+                throw TypeMismatch(op, "Type Mismatch, because can't NOT a non-boolean value");
+
+            Value nutted; // hehe
+            nutted.type = ValueType::VALUE_BOOL;
+            nutted.number = operand.number == 1.0 ? 0.0 : 1.0;
+
+            workingStack.push(nutted);
+            break;
+
+        default:
+            throw std::exception(); // TODO: interpreter bug
+    }
 }
 
 void Interpreter::visitBinaryExpression(BinaryExpression& expression) {

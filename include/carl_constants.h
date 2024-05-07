@@ -12,4 +12,8 @@ enum ParserError {
     MISSING_CLOSING_BRACKET = 101,
 };
 
+enum RuntimeError {
+    TYPE_MISMATCH = 1000,
+};
+
 #endif
