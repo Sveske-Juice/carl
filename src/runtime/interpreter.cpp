@@ -80,7 +80,7 @@ void Interpreter::visitLiteralExpression(LiteralExpression &expression) {
 void Interpreter::visitUnaryExpression(UnaryExpression &expression) {
     // Eval operand
     expression.operand().accept(*this);
-    const Value &operand = workingStack.top();
+    Value operand = workingStack.top();
     workingStack.pop();
     const Token &op = expression.op();
 
@@ -113,6 +113,8 @@ void Interpreter::visitUnaryExpression(UnaryExpression &expression) {
     default:
         throw std::exception(); // TODO: interpreter bug
     }
+
+    operand.dispose();
 }
 
 void Interpreter::visitBinaryExpression(BinaryExpression &expression) {
@@ -151,26 +153,29 @@ void Interpreter::visitBinaryExpression(BinaryExpression &expression) {
         default:
             throw std::exception(); // TODO: interpreter bug
         }
-    // String concat
+        // String concat
     } else if (IS_STRING(l) && IS_STRING(r) && op.type() == TokenType::PLUS) {
-        ObjString* left = reinterpret_cast<ObjString *>(l.obj);
-        ObjString* right = reinterpret_cast<ObjString *>(r.obj);
+        ObjString *left = reinterpret_cast<ObjString *>(l.obj);
+        ObjString *right = reinterpret_cast<ObjString *>(r.obj);
 
         size_t resultLength = left->length + right->length;
-        char * resultStr = new char[resultLength + 1];
+        char *resultStr = new char[resultLength + 1];
         std::memcpy(resultStr, left->chars, left->length);
         std::memcpy(resultStr + left->length, right->chars, right->length);
         resultStr[resultLength] = '\0';
 
-        ObjString* resultObjString = new ObjString();
+        ObjString *resultObjString = new ObjString();
         resultObjString->length = resultLength;
         resultObjString->chars = resultStr;
         resultObjString->obj.objType = ObjectType::OBJ_STRING;
         result.type = ValueType::VALUE_OBJ;
         result.obj = reinterpret_cast<Obj *>(resultObjString);
     } else {
-        throw TypeMismatch(
-            op, "Type Mismatch, binary operation expects two numbers or two strings");
+        throw TypeMismatch(op, "Type Mismatch, binary operation expects two "
+                               "numbers or two strings");
     }
+
+    l.dispose();
+    r.dispose();
     workingStack.push(result);
 }
