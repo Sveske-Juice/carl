@@ -12,21 +12,10 @@ Interpreter::Interpreter(std::unique_ptr<Expression> _rootExpression)
 
 Value Interpreter::interpret() {
     rootExpression->accept(*this);
-    while (workingStack.size() != 0) {
-        const Value &res = workingStack.top();
-        if (res.type == ValueType::VALUE_OBJ) {
-            std::cout << "Object result: {" << res.type << ", "
-                      << reinterpret_cast<ObjString *>(res.obj)->chars << "}"
-                      << std::endl;
-        } else {
-            std::cout << "Primitive result: {" << res.type << ", " << res.number
-                      << "}" << std::endl;
-        }
-        if (workingStack.size() == 1)
-            break;
-        workingStack.top().dispose();
-        workingStack.pop();
-    }
+
+    // It should evaluate to only one value
+    assert(workingStack.size() == 1);
+
     return workingStack.top();
 }
 

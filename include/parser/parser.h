@@ -13,6 +13,7 @@ class Parser {
         size_t currentIndex{0};
         void consume();
         bool matchAny(std::initializer_list<TokenType> tokenTypes);
+        bool isOfType(TokenType typeToCheck, std::initializer_list<TokenType> types) const;
         bool isAtEnd() const;
         Token previous() const;
         Token peek() const;

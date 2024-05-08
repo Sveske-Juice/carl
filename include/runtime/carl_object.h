@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <exception>
+#include <fmt/core.h>
+#include <string>
 
 enum ValueType {
     VALUE_BOOL,
@@ -52,6 +54,13 @@ struct Value {
                 throw std::exception();
         }
         obj = nullptr;
+    }
+
+    std::string toString() {
+        if (type == ValueType::VALUE_OBJ && obj->objType == ObjectType::OBJ_STRING)
+            return reinterpret_cast<ObjString *>(obj)->chars;
+
+        return std::to_string(number);
     }
 };
 

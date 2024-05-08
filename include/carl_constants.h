@@ -8,8 +8,9 @@ enum LexerError {
 };
 
 enum ParserError {
-    UNEXPECTED_TOKEN = 100,
-    MISSING_CLOSING_BRACKET = 101,
+    SYNTAX_ERROR = 100,
+    UNEXPECTED_TOKEN = 101,
+    MISSING_CLOSING_BRACKET = 102,
 };
 
 enum RuntimeError {

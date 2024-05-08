@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-static std::string_view TokenTypesToString[] = {
+static std::string TokenTypesToString[] = {
     "String",
     "Number",
 

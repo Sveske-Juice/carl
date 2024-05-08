@@ -6,7 +6,9 @@
 #include <cassert>
 #include <cstdint>
 #include <exception>
+#include <fmt/core.h>
 #include <format>
+#include <iostream>
 #include <string>
 #include <tuple>
 
@@ -15,8 +17,8 @@ class ParserException : public std::exception {
     protected:
         const uint16_t sourceOffset_;
         const uint16_t length_;
-        const Token* token_;
-        static inline std::tuple<uint16_t, uint16_t> calculateLineNumber(const std::string_view source, const uint16_t sourceOffset) {
+        std::tuple<uint16_t, uint16_t> calculateLineNumber(const std::string_view source, const uint16_t sourceOffset) const {
+            std::cout << fmt::format("off: {}, len: {}, size: {}", sourceOffset_, length_, source.size()) << std::endl;
             assert((source.size() >= sourceOffset) && "Could not calculate line number since the offset exceeds the bounds of the source string given");
 
             uint16_t lineNumber{0};
@@ -32,7 +34,7 @@ class ParserException : public std::exception {
         std::string locationPrefix(std::string_view source) const {
             uint16_t startLineNumber;
             uint16_t startCharacterIndex;
-            std::tie(startLineNumber, startCharacterIndex) = ParserException::calculateLineNumber(source, sourceOffset_);
+            std::tie(startLineNumber, startCharacterIndex) = calculateLineNumber(source, sourceOffset_);
 
             uint16_t endLineNumber;
             uint16_t endCharacterIndex;
@@ -40,31 +42,45 @@ class ParserException : public std::exception {
             return std::format("{}:{} - {}:{}", startLineNumber, startCharacterIndex, endLineNumber, endCharacterIndex);
         }
     public:
-        ParserException(const uint16_t sourceOffset, const uint16_t length) : sourceOffset_{sourceOffset}, length_{length}, token_{nullptr} {}
-        ParserException(const Token& token) : sourceOffset_{token.sourceOffset()}, length_{token.length()}, token_{&token} {}
+        ParserException(const uint16_t sourceOffset, const uint16_t length) : sourceOffset_{sourceOffset}, length_{length} {}
 
         virtual const std::string what(std::string_view source) const noexcept = 0;
         virtual const ParserError error_code() const noexcept = 0;
 };
 
-class UnexpectedToken : public ParserException {
+class SyntaxError : public ParserException {
+    private:
+        const Token token_;
     public:
-        UnexpectedToken(const uint16_t sourceOffset, const uint16_t length) : ParserException(sourceOffset, length) {}
-        UnexpectedToken(const Token& token) : ParserException(token) {}
+        SyntaxError(const Token token) : token_{token}, ParserException(token.sourceOffset(), token.length()) {}
+
+        const ParserError error_code() const noexcept override {
+            return ParserError::SYNTAX_ERROR;
+        }
+
+        const std::string what(std::string_view source) const noexcept override {
+            return std::string{locationPrefix(source) + " Syntax Error" + token_.literal() + "'"};
+        }
+};
+
+class UnexpectedToken : public ParserException {
+    private:
+        const Token token_;
+    public:
+        UnexpectedToken(const Token token) : token_{token}, ParserException(token.sourceOffset(), token.length()) {}
 
         const ParserError error_code() const noexcept override {
             return ParserError::UNEXPECTED_TOKEN;
         }
 
         const std::string what(std::string_view source) const noexcept override {
-            return std::string{locationPrefix(source) + " Unexpected Token '" + token_->literal() + "'"};
+            return std::string{locationPrefix(source) + " Unexpected Token '" + token_.literal() + "'"};
         }
 };
 
 class MissingClosingBracket : public ParserException {
     public:
         MissingClosingBracket(const uint16_t sourceOffset, const uint16_t length) : ParserException(sourceOffset, length) {}
-        MissingClosingBracket(const Token& token) : ParserException(token) {}
 
         const ParserError error_code() const noexcept override {
             return ParserError::MISSING_CLOSING_BRACKET;

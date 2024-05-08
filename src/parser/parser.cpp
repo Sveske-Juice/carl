@@ -114,3 +114,12 @@ inline Token Parser::previous() const {
 inline Token Parser::peek() const {
     return lexemes[currentIndex];
 }
+
+inline bool Parser::isOfType(TokenType typeToCheck, std::initializer_list<TokenType> types) const {
+    for (TokenType type : types) {
+        if (typeToCheck == type)
+            return true;
+    }
+
+    return false;
+}
