@@ -11,6 +11,7 @@ enum ParserError {
     SYNTAX_ERROR = 100,
     UNEXPECTED_TOKEN = 101,
     MISSING_CLOSING_BRACKET = 102,
+    MISSING_TERMINATOR = 103,
 };
 
 enum RuntimeError {

@@ -91,4 +91,18 @@ class MissingClosingBracket : public ParserException {
         }
 };
 
+class MissingTerminator : public ParserException {
+    private:
+        const Token token_;
+    public:
+        MissingTerminator(const Token token) : token_{token}, ParserException(token.sourceOffset(), token.length()) {}
+
+        const ParserError error_code() const noexcept override {
+            return ParserError::MISSING_TERMINATOR;
+        }
+
+        const std::string what(std::string_view source) const noexcept override {
+            return std::string{locationPrefix(source) + " Missing terminator after '" + token_.literal() + "'"};
+        }
+};
 #endif

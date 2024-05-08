@@ -2,22 +2,26 @@
 #define INTERPRETER_H
 
 #include "parser/iexpression_visitor.h"
+#include "parser/istatement_visitor.h"
+#include "parser/statement.h"
 #include "runtime/carl_object.h"
 #include <memory>
 #include <stack>
+#include <vector>
 
 #define IS_STRING(value)                                                       \
     (value.type == ValueType::VALUE_OBJ &&                                     \
      value.obj->objType == ObjectType::OBJ_STRING)
 
-class Interpreter : public IExpressionVisitor {
+class Interpreter : public IStatementVisitor, IExpressionVisitor {
 private:
-    const std::unique_ptr<Expression> rootExpression;
+    const std::vector<std::unique_ptr<Statement>> statements;
     std::stack<Value> workingStack;
 
 public:
-    Interpreter(std::unique_ptr<Expression> _rootExpression);
+    Interpreter(std::vector<std::unique_ptr<Statement>> _statements);
     Value interpret();
+    virtual void visitExpressionStatement(ExpressionStatement& statement) override;
     virtual void visitLiteralExpression(LiteralExpression &expression) override;
     virtual void visitBinaryExpression(BinaryExpression &expression) override;
     virtual void visitUnaryExpression(UnaryExpression &expression) override;

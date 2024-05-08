@@ -28,10 +28,12 @@ int main (int argc, char *argv[]) {
             printf("%s(%s, off: %d, l: %d)\n", TokenTypesToString[token.type()].data(), token.literal().data(), token.sourceOffset(), token.length());
         }
         Parser parser{tokens};
-        std::unique_ptr<Expression> root = parser.parse();
-        Interpreter interpreter(std::move(root));
-        Value output = interpreter.interpret();
-        std::cout << output.toString() << std::endl;
+        auto statements = parser.parse();
+        Interpreter interpreter(std::move(statements));
+
+        Value lastOutput = interpreter.interpret();
+        lastOutput.dispose();
+        // std::cout << output.toString() << std::endl;
     }
     catch(const LexerException& le) {
         std::string_view sv{src.begin(), src.end()};

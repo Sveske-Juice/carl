@@ -7,16 +7,28 @@
 #include <fmt/core.h>
 #include <iostream>
 
-Interpreter::Interpreter(std::unique_ptr<Expression> _rootExpression)
-    : rootExpression(std::move(_rootExpression)) {}
+Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements) : statements(std::move(_statements)) {}
 
 Value Interpreter::interpret() {
-    rootExpression->accept(*this);
+    for (int i = 0; i < statements.size(); i++) {
+        statements[i]->accept(*this);
 
-    // It should evaluate to only one value
-    assert(workingStack.size() == 1);
+        // It should evaluate to only one value
+        assert(workingStack.size() == 1);
+        std::cout << workingStack.top().toString() << std::endl;
+
+        // Keep last value for return
+        if (i != statements.size() - 1) {
+            workingStack.top().dispose();
+            workingStack.pop();
+        }
+    }
 
     return workingStack.top();
+}
+
+void Interpreter::visitExpressionStatement(ExpressionStatement& statement) {
+    statement.expression().accept(*this);
 }
 
 void Interpreter::visitLiteralExpression(LiteralExpression &expression) {

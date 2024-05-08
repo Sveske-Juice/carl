@@ -3,6 +3,7 @@
 
 #include "lexer/token.h"
 #include "parser/expression.h"
+#include "parser/statement.h"
 
 #include <memory>
 #include <vector>
@@ -18,6 +19,8 @@ class Parser {
         Token previous() const;
         Token peek() const;
 
+        std::unique_ptr<Statement> statement();
+        std::unique_ptr<Statement> expressionStatement();
         std::unique_ptr<Expression> expression();
         std::unique_ptr<Expression> equality();
         std::unique_ptr<Expression> comparison();
@@ -28,7 +31,7 @@ class Parser {
 
     public:
         Parser(const std::vector<Token> _lexemes) : lexemes{std::move(_lexemes)} {}
-        std::unique_ptr<Expression> parse();
+        std::vector<std::unique_ptr<Statement>> parse();
 };
 
 #endif
