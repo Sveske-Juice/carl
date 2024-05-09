@@ -3,9 +3,11 @@
 #include "parser/expression.h"
 #include "parser/parser.h"
 #include "parser/parser_errors.h"
+#include "parser/statement.h"
 #include <catch2/catch_test_macros.hpp>
 #include <exception>
 #include <iostream>
+#include <memory>
 
 TEST_CASE("Parser Literals", "[Parser:Literals]") {
     // TODO: should not rely on the printer to verify the results.
@@ -14,11 +16,13 @@ TEST_CASE("Parser Literals", "[Parser:Literals]") {
         AstPrinter printer;
         std::vector<Token> lexemes = {
             Token(TokenType::NUMBER, 0, 1, "69"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "69");
     }
@@ -28,11 +32,13 @@ TEST_CASE("Parser Literals", "[Parser:Literals]") {
         std::string str = "MY PERFECT STRING";
         std::vector<Token> lexemes = {
             Token(TokenType::STRING, 0, 1, str),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == str);
     }
@@ -45,11 +51,13 @@ TEST_CASE("Parser Unary", "[Parser:Unary]") {
         std::vector<Token> lexemes = {
             Token(TokenType::MINUS, 0, 1, "-"),
             Token(TokenType::NUMBER, 0, 1, "69"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "-69");
     }
@@ -62,11 +70,13 @@ TEST_CASE("Parser Unary", "[Parser:Unary]") {
                 lexemes.push_back(Token(TokenType::BANG, 0, 1, "!"));
             }
             lexemes.push_back(Token(TokenType::TRUE, 0, 1, "true"));
+            lexemes.push_back(Token(TokenType::SEMICOLON, 0, 1, ";"));
             lexemes.push_back(Token(TokenType::END_OF_FILE, 0, 1, "\0"));
 
             Parser parser{lexemes};
-            std::unique_ptr<Expression> expression = parser.parse();
-            std::string out = printer.print(*expression);
+            auto statement = std::move(parser.parse()[0]);
+            Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+            std::string out = printer.print(expression);
 
             std::string correct;
             for (int j = 0; j < i; j++) {
@@ -83,11 +93,13 @@ TEST_CASE("Parser Unary", "[Parser:Unary]") {
                 lexemes.push_back(Token(TokenType::MINUS, 0, 1, "-"));
             }
             lexemes.push_back(Token(TokenType::TRUE, 0, 1, "69"));
+            lexemes.push_back(Token(TokenType::SEMICOLON, 0, 1, ";"));
             lexemes.push_back(Token(TokenType::END_OF_FILE, 0, 1, "\0"));
 
             Parser parser{lexemes};
-            std::unique_ptr<Expression> expression = parser.parse();
-            std::string out = printer.print(*expression);
+            auto statement = std::move(parser.parse()[0]);
+            Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+            std::string out = printer.print(expression);
 
             std::string correct;
             for (int j = 0; j < i; j++) {
@@ -107,11 +119,13 @@ TEST_CASE("Parser Binary", "[Parser:Binary]") {
             Token(TokenType::NUMBER, 0, 1, "69"),
             Token(TokenType::PLUS, 0, 1, "+"),
             Token(TokenType::NUMBER, 0, 1, "420"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "(69 + 420)");
     }
@@ -121,11 +135,13 @@ TEST_CASE("Parser Binary", "[Parser:Binary]") {
             Token(TokenType::NUMBER, 0, 1, "69"),
             Token(TokenType::MINUS, 0, 1, "-"),
             Token(TokenType::NUMBER, 0, 1, "420"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "(69 - 420)");
     }
@@ -135,11 +151,13 @@ TEST_CASE("Parser Binary", "[Parser:Binary]") {
             Token(TokenType::NUMBER, 0, 1, "69"),
             Token(TokenType::STAR, 0, 1, "*"),
             Token(TokenType::NUMBER, 0, 1, "420"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "(69 * 420)");
     }
@@ -149,11 +167,13 @@ TEST_CASE("Parser Binary", "[Parser:Binary]") {
             Token(TokenType::NUMBER, 0, 1, "69"),
             Token(TokenType::SLASH, 0, 1, "/"),
             Token(TokenType::NUMBER, 0, 1, "420"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
-        std::unique_ptr<Expression> expression = parser.parse();
-        std::string out = printer.print(*expression);
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
 
         CHECK(out == "(69 / 420)");
     }
@@ -163,6 +183,7 @@ TEST_CASE("Parser Exceptions", "[Parser:Exceptions]") {
     SECTION("Unexpected Token") {
         std::vector<Token> lexemes = {
             Token(TokenType::PLUS, 0, 1, "+"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};
@@ -171,6 +192,7 @@ TEST_CASE("Parser Exceptions", "[Parser:Exceptions]") {
     SECTION("Missing Closing Bracket") {
         std::vector<Token> lexemes = {
             Token(TokenType::LPAREN, 0, 1, "("),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
             Token(TokenType::END_OF_FILE, 0, 1, "\0"),
         };
         Parser parser{lexemes};

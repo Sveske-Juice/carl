@@ -1,4 +1,5 @@
 #include "runtime/interpreter.h"
+#include "parser/statement.h"
 #include "lexer/token.h"
 #include "parser/expression.h"
 #include "runtime/carl_object.h"
@@ -6,8 +7,13 @@
 #include <cstring>
 #include <fmt/core.h>
 #include <iostream>
+#include <vector>
 
 Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements) : statements(std::move(_statements)) {}
+
+Interpreter::Interpreter(std::unique_ptr<Statement> _statement) {
+    statements.push_back(std::move(_statement));
+}
 
 Value Interpreter::interpret() {
     for (int i = 0; i < statements.size(); i++) {

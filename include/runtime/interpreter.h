@@ -15,10 +15,11 @@
 
 class Interpreter : public IStatementVisitor, IExpressionVisitor {
 private:
-    const std::vector<std::unique_ptr<Statement>> statements;
+    std::vector<std::unique_ptr<Statement>> statements;
     std::stack<Value> workingStack;
 
 public:
+    Interpreter(std::unique_ptr<Statement> _statement);
     Interpreter(std::vector<std::unique_ptr<Statement>> _statements);
     Value interpret();
     virtual void visitExpressionStatement(ExpressionStatement& statement) override;
