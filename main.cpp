@@ -31,7 +31,7 @@ int main (int argc, char *argv[]) {
 
         Value lastOutput = interpreter.interpret();
         lastOutput.dispose();
-        // std::cout << output.toString() << std::endl;
+        std::cout << lastOutput.toString() << std::endl;
     }
     catch(const LexerException& le) {
         std::string_view sv{src.begin(), src.end()};

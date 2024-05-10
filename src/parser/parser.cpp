@@ -17,16 +17,17 @@ std::vector<std::unique_ptr<Statement>> Parser::parse() {
 }
 
 std::unique_ptr<Statement> Parser::statement() {
-    return expressionStatement();
-}
-
-std::unique_ptr<Statement> Parser::expressionStatement() {
-    std::unique_ptr<Expression> expr = expression();
+    std::unique_ptr<Statement> expr = expressionStatement();
 
     if (!matchAny({TokenType::SEMICOLON})) {
         throw MissingTerminator(previous());
     }
 
+    return std::move(expr);
+}
+
+std::unique_ptr<Statement> Parser::expressionStatement() {
+    std::unique_ptr<Expression> expr = expression();
     return std::make_unique<ExpressionStatement>(std::move(expr));
 }
 
