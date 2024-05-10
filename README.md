@@ -4,6 +4,8 @@
 ```
 <program>               ::= <statement>* EOF
 
+<definition>            ::= <defineStatement> | <statement>
+<defineStatement>       ::= "define" STRING "->" <expression> "=" <expression> ";"
 <statement>             ::= <expressionStatement> ";"
 <expressionStatement>   ::= <expression>
 
