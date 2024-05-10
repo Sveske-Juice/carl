@@ -28,6 +28,7 @@ private:
     uint16_t start{0};
     uint16_t currentCharacterIndex{0};
 
+    bool isAlpha(char c) const;
     bool isAtEndOfFile() const;
     char peek(size_t ahead = 0) const;
     char consume();

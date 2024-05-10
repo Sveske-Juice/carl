@@ -213,8 +213,8 @@ std::vector<Token> Lexer::tokenize() {
                     Token(TokenType::NUMBER, start, numberLen, numberLiteral));
             }
             // Lex keywords & identifiers (variables, functions etc.)
-            else if (std::isalpha(c)) {
-                while (std::isalpha(peek()))
+            else if (isAlpha(c)) {
+                while (isAlpha(peek()))
                     consume();
 
                 size_t identifierLen = currentCharacterIndex - start;
@@ -243,6 +243,8 @@ std::vector<Token> Lexer::tokenize() {
                            currentCharacterIndex - start, std::string{"\0"}));
     return tokens;
 }
+
+inline bool Lexer::isAlpha(char c) const { return std::isalpha(c) || c == '_' || c == '-'; }
 
 std::string Lexer::tokensToString(const std::vector<Token> &tokens) {
     std::string output;
