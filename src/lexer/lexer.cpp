@@ -53,26 +53,6 @@ std::vector<Token> Lexer::tokenize() {
                                    currentCharacterIndex - start,
                                    std::string{")"}));
             break;
-        case '[':
-            tokens.push_back(Token(TokenType::LSQUARE, start,
-                                   currentCharacterIndex - start,
-                                   std::string{"["}));
-            break;
-        case ']':
-            tokens.push_back(Token(TokenType::RSQUARE, start,
-                                   currentCharacterIndex - start,
-                                   std::string{"]"}));
-            break;
-        case '{':
-            tokens.push_back(Token(TokenType::LCURLY, start,
-                                   currentCharacterIndex - start,
-                                   std::string{"{"}));
-            break;
-        case '}':
-            tokens.push_back(Token(TokenType::RCURLY, start,
-                                   currentCharacterIndex - start,
-                                   std::string{"}"}));
-            break;
         case ',':
             tokens.push_back(Token(TokenType::COMMA, start,
                                    currentCharacterIndex - start,
@@ -82,11 +62,6 @@ std::vector<Token> Lexer::tokenize() {
             tokens.push_back(Token(TokenType::DOT, start,
                                    currentCharacterIndex - start,
                                    std::string{"."}));
-            break;
-        case '-':
-            tokens.push_back(Token(TokenType::MINUS, start,
-                                   currentCharacterIndex - start,
-                                   std::string{"-"}));
             break;
         case '+':
             tokens.push_back(Token(TokenType::PLUS, start,
@@ -150,6 +125,16 @@ std::vector<Token> Lexer::tokenize() {
                 tokens.push_back(Token(TokenType::EQUALS, start,
                                        currentCharacterIndex - start,
                                        std::string{"="}));
+            break;
+        case '-':
+            if (match('>'))
+                tokens.push_back(
+                    (Token(TokenType::ARROW, start,
+                           currentCharacterIndex - start, std::string{"->"})));
+            else
+                tokens.push_back(Token(TokenType::MINUS, start,
+                                       currentCharacterIndex - start,
+                                       std::string{"-"}));
             break;
 
         case '<':

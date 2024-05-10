@@ -18,10 +18,6 @@ static std::string TokenTypesToString[] = {
     "Modulus",
     "Exponent",
 
-    "Left Squarebracket",
-    "Right Squarebracket",
-    "Left Curlybracket",
-    "Right Curlybracket",
     "Left Parenthesis",
     "Right Parenthesis",
     "Equals",
@@ -31,6 +27,7 @@ static std::string TokenTypesToString[] = {
     "Less Equals",
     "Greater Equals",
     "Not Equals",
+    "Arrow",
 
     "Colon",
     "Semicolon",
@@ -66,14 +63,9 @@ enum TokenType {
     EXPONENT, // ^
 
     // Brackets
-    LSQUARE, // [
-    RSQUARE, // ]
-    LCURLY,  // {
-    RCURLY,  // }
     LPAREN,  // (
     RPAREN,  // )
 
-    // Comparison
     EQUALS,         // =
     LESS,           // <
     GREATER,        // >
@@ -81,6 +73,7 @@ enum TokenType {
     LESS_EQUALS,    // <=
     GREATER_EQUALS, // >=
     BANG_EQUALS,    // !=
+    ARROW,          // ->
 
     // Characters
     COLON,     // :
