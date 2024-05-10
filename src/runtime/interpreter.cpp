@@ -3,6 +3,7 @@
 #include "parser/expression.h"
 #include "parser/statement.h"
 #include "runtime/carl_object.h"
+#include "runtime/expressionrewriter.h"
 #include "runtime/runtime_errors.h"
 #include <cstring>
 #include <fmt/core.h>
@@ -35,12 +36,18 @@ void Interpreter::visitExpressionStatement(ExpressionStatement &statement) {
 
 void Interpreter::visitDefineStatement(DefineStatement &statement) {
     // NOTE: this invalidates the statement since we move the pattern & replacement. Is this okay?
-    std::unique_ptr<Rule> newDefinition = std::make_unique<Rule>(statement.pattern(), statement.replacement());
+    std::unique_ptr<Rule> newDefinition = std::make_unique<Rule>(statement.borrowPattern(), statement.borrowReplacement());
     environment.addDefinition(statement.ruleName(), std::move(newDefinition));
-    std::cout << "Added new rule: name: " << statement.ruleName()
-              << ", pattern: " << statement.pattern().toString()
-              << ", replace: " << statement.replacement().toString()
-              << std::endl;
+}
+
+void Interpreter::visitApplyStatement(ApplyStatement& statement) {
+    auto definition = environment.getDefinition(statement.ruleName());
+    if (definition == environment.end()) {
+        throw NoRuleFound(Token(TokenType::APPLY, 0, 5, "apply"), "Definition '" + statement.ruleName() + "' is not defined");
+    }
+    ExpressionRewriter rewriter;
+    auto result = rewriter.substitute(statement.borrowExpression(), definition->second->borrowPattern(), definition->second->borrowReplacement());
+    std::cout << result->toString() << std::endl;
 }
 
 void Interpreter::visitLiteralExpression(LiteralExpression &expression) {

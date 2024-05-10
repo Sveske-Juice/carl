@@ -16,6 +16,7 @@ enum ParserError {
 
 enum RuntimeError {
     TYPE_MISMATCH = 1000,
+    NO_RULE_FOUND = 1001,
 };
 
 #endif

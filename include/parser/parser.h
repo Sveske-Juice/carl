@@ -19,6 +19,9 @@ class Parser {
         Token previous() const;
         Token peek() const;
 
+        std::unique_ptr<Statement> ruleApply();
+        std::unique_ptr<Statement> applyStatement();
+
         std::unique_ptr<Statement> definition();
         std::unique_ptr<Statement> defineStatement();
 

@@ -4,6 +4,9 @@
 ```
 <program>               ::= <statement>* EOF
 
+<ruleApply>             ::= <applyStatement> | <definition>
+<applyStatement>        ::= "apply" IDENTIFIER ":" <expression> ";"
+
 <definition>            ::= <defineStatement> | <statement>
 <defineStatement>       ::= "define" IDENTIFIER "->" <expression> "=" <expression> ";"
 <statement>             ::= <expressionStatement> ";"

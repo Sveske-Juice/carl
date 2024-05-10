@@ -15,6 +15,12 @@ public:
         // TODO: handle rule already exists
         definitions[name] = std::move(definition);
     }
+
+    auto getDefinition(std::string name) const {
+        return definitions.find(name);
+    }
+
+    auto end() const { return definitions.end(); }
 };
 
 #endif

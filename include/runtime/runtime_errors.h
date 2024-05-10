@@ -61,5 +61,20 @@ class TypeMismatch : public RuntimeException {
         }
 };
 
+class NoRuleFound : public RuntimeException {
+    private:
+        const std::string reason_;
+    public:
+        NoRuleFound(const uint16_t sourceOffset, const uint16_t length) : RuntimeException(sourceOffset, length) {}
+        NoRuleFound(const Token& token, std::string reason) : RuntimeException(token), reason_{reason} {}
+
+        virtual const std::string what(std::string_view source) const noexcept override {
+            return fmt::format("{} {}", locationPrefix(source), reason_);
+        }
+        virtual const RuntimeError error_code() const noexcept override {
+            return RuntimeError::NO_RULE_FOUND;
+        }
+};
+
 
 #endif

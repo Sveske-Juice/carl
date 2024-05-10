@@ -10,10 +10,33 @@
 std::vector<std::unique_ptr<Statement>> Parser::parse() {
     std::vector<std::unique_ptr<Statement>> statements;
     while (!isAtEnd()) {
-        statements.push_back(definition());
+        statements.push_back(ruleApply());
     }
 
     return statements;
+}
+
+std::unique_ptr<Statement> Parser::ruleApply() {
+    if (matchAny({TokenType::APPLY})) {
+        return applyStatement();
+    }
+
+    return definition();
+}
+
+std::unique_ptr<Statement> Parser::applyStatement() {
+    if (!matchAny({TokenType::IDENTIFIER}))
+        throw SyntaxError(previous(), "Expected a rule name after apply command");
+    Token ruleName = previous();
+    if (!matchAny({TokenType::COLON}))
+        throw SyntaxError(previous(), "Expected a seperator ':' between rule name and expression");
+
+    std::unique_ptr<Expression> expr = expression();
+
+    if (!matchAny({TokenType::SEMICOLON}))
+        throw MissingTerminator(previous());
+
+    return std::make_unique<ApplyStatement>(ruleName.literal(), std::move(expr));
 }
 
 std::unique_ptr<Statement> Parser::definition() {
