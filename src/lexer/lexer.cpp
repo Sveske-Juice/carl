@@ -79,7 +79,6 @@ std::vector<Token> Lexer::tokenize() {
                                    std::string{","}));
             break;
         case '.':
-            std::cout << currentCharacterIndex - start << std::endl;
             tokens.push_back(Token(TokenType::DOT, start,
                                    currentCharacterIndex - start,
                                    std::string{"."}));

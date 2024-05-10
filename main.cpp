@@ -2,11 +2,9 @@
 #include "lexer/lexer_errors.h"
 #include "parser/parser.h"
 #include "parser/parser_errors.h"
-#include "lexer/token.h"
 #include "runtime/interpreter.h"
 #include "runtime/runtime_errors.h"
 
-#include <algorithm>
 #include <cstdio>
 #include <iostream>
 #include <string>

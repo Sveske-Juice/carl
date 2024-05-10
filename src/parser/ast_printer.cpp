@@ -6,6 +6,9 @@
 #include <string>
 
 std::string AstPrinter::print(Expression &expression) {
+    while (workingStack.size() > 0) {
+        workingStack.pop();
+    }
     expression.accept(*this);
     assert(workingStack.size() == 1);
     return workingStack.top();

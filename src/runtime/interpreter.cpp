@@ -21,7 +21,7 @@ Value Interpreter::interpret() {
 
         // It should evaluate to only one value
         assert(workingStack.size() == 1);
-        std::cout << workingStack.top().toString() << std::endl;
+        // std::cout << workingStack.top().toString() << std::endl;
 
         // Keep last value for return
         if (i != statements.size() - 1) {
