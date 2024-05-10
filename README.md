@@ -1,7 +1,8 @@
 # Carl
 
 ## BNF of language
-```
+
+```ebnf
 <program>               ::= <statement>* EOF
 
 <ruleApply>             ::= <applyStatement> | <definition>

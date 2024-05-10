@@ -18,7 +18,6 @@ class ParserException : public std::exception {
         const uint16_t sourceOffset_;
         const uint16_t length_;
         std::tuple<uint16_t, uint16_t> calculateLineNumber(const std::string_view source, const uint16_t sourceOffset) const {
-            std::cout << fmt::format("off: {}, len: {}, size: {}", sourceOffset_, length_, source.size()) << std::endl;
             assert((source.size() >= sourceOffset) && "Could not calculate line number since the offset exceeds the bounds of the source string given");
 
             uint16_t lineNumber{0};

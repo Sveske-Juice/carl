@@ -11,6 +11,8 @@
 #include <memory>
 #include <vector>
 
+Interpreter::Interpreter() {}
+
 Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements)
     : statements(std::move(_statements)) {}
 
@@ -18,7 +20,16 @@ Interpreter::Interpreter(std::unique_ptr<Statement> _statement) {
     statements.push_back(std::move(_statement));
 }
 
+std::optional<Value> Interpreter::interpret(std::vector<std::unique_ptr<Statement>> statements_) {
+    statements = std::move(statements_);
+    return interpret();
+}
+
 std::optional<Value> Interpreter::interpret() {
+    while (workingStack.size() > 0) {
+        workingStack.pop();
+    }
+
     for (int i = 0; i < statements.size(); i++) {
         statements[i]->accept(*this);
     }
@@ -47,7 +58,7 @@ void Interpreter::visitApplyStatement(ApplyStatement& statement) {
     }
     ExpressionRewriter rewriter;
     auto result = rewriter.substitute(statement.borrowExpression(), definition->second->borrowPattern(), definition->second->borrowReplacement());
-    std::cout << result->toString() << std::endl;
+    std::cout << "\t# " << result->toString() << std::endl;
 }
 
 void Interpreter::visitLiteralExpression(LiteralExpression &expression) {

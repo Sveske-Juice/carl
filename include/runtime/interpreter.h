@@ -22,9 +22,11 @@ private:
     std::stack<Value> workingStack;
 
 public:
+    Interpreter();
     Interpreter(std::unique_ptr<Statement> _statement);
     Interpreter(std::vector<std::unique_ptr<Statement>> _statements);
     std::optional<Value> interpret();
+    std::optional<Value> interpret(std::vector<std::unique_ptr<Statement>> statements_);
     virtual void visitExpressionStatement(ExpressionStatement& statement) override;
     virtual void visitDefineStatement(DefineStatement& statement) override;
     virtual void visitApplyStatement(ApplyStatement& statement) override;

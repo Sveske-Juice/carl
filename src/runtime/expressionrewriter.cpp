@@ -28,7 +28,6 @@ ExpressionRewriter::substitute(std::unique_ptr<Expression> rootSource,
     if (!match)
         return rootSource;
 
-    std::cout << "MATCH" << std::endl;
     state = RESOLVING_REPLACEMNT;
 
     // Resolve all symbols in this->replacement to the corresponding found in the
@@ -69,11 +68,6 @@ ExpressionRewriter::substitute(std::unique_ptr<Expression> rootSource,
         throw std::exception();
     }
 
-    std::cout << "Pattern RPN: " << std::endl;
-    for (Expression *expr : patternPostfixStack) {
-        std::cout << expressionTypeToString[expr->expressionType()]
-                  << std::endl;
-    }
     return std::move(rootSource);
 }
 
@@ -83,12 +77,6 @@ void ExpressionRewriter::checkForMatch() {
     if (sourcePostfixStack.size() < patternPostfixStack.size())
         return;
 
-    /* std::cout << "Check:\n" << std::endl;
-    for (int i = 0; i < sourcePostfixStack.size(); i++) {
-        std::cout
-            << expressionTypeToString[sourcePostfixStack[i]->expressionType()]
-            << std::endl;
-    } */
     const int begin = sourcePostfixStack.size() - patternPostfixStack.size();
     for (int sourceIdx = begin; sourceIdx < begin + patternPostfixStack.size();
          sourceIdx++) {
@@ -97,7 +85,6 @@ void ExpressionRewriter::checkForMatch() {
         case EXPR_STRING: {
             LiteralExpression *symbolExpr = static_cast<LiteralExpression *>(
                 patternPostfixStack[patternIdx]);
-            std::cout << "Mapping " << symbolExpr->toString() << " -> " << sourcePostfixStack[sourceIdx]->toString() << std::endl;
             symbolMap[symbolExpr->literal()] = sourcePostfixStack[sourceIdx];
 
             // Variable Literal matches everything (constants, subexpressions
@@ -185,7 +172,6 @@ void ExpressionRewriter::resolveReplacement() {
         bool rhs = &parent->right() == node ? true : false;
         auto value = std::unique_ptr<Expression>(correspondingExpression->second);
 
-        std::cout << "Replacing " << node->toString() << " with " << value->toString() << std::endl;
         if (rhs)
             parent->setRight(std::move(value));
         else
