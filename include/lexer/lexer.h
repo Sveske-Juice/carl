@@ -12,7 +12,7 @@ static inline const std::unordered_map<std::string, TokenType> keywords{
     {"or", TokenType::OR},       {"if", TokenType::IF},
     {"else", TokenType::ELSE},   {"while", TokenType::WHILE},
     {"for", TokenType::FOR},     {"true", TokenType::TRUE},
-    {"false", TokenType::FALSE}
+    {"false", TokenType::FALSE}, {"define", TokenType::DEFINE}
 };
 
 class Lexer {

@@ -29,9 +29,11 @@ int main (int argc, char *argv[]) {
         auto statements = parser.parse();
         Interpreter interpreter(std::move(statements));
 
-        Value lastOutput = interpreter.interpret();
-        lastOutput.dispose();
-        std::cout << lastOutput.toString() << std::endl;
+        auto lastOutput = interpreter.interpret();
+        if (lastOutput.has_value()) {
+            lastOutput.value().dispose();
+            std::cout << lastOutput.value().toString() << std::endl;
+        }
     }
     catch(const LexerException& le) {
         std::string_view sv{src.begin(), src.end()};

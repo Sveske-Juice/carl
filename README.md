@@ -5,14 +5,14 @@
 <program>               ::= <statement>* EOF
 
 <definition>            ::= <defineStatement> | <statement>
-<defineStatement>       ::= "define" STRING "->" <expression> "=" <expression> ";"
+<defineStatement>       ::= "define" IDENTIFIER "->" <expression> "=" <expression> ";"
 <statement>             ::= <expressionStatement> ";"
 <expressionStatement>   ::= <expression>
 
 <expression>            ::= <equality>
-<equality>              ::= <comparison> ( ("!=" | "==") comparison )*
+<equality>              ::= <comparison> ( ("!=" | "==") <comparison> )*
 <comparison>            ::= <term> ( ( ">" | ">=" | "<" | "<=" ) <term> )*
 <term>                  ::= <factor> ( ( "+" | "-" ) <factor> )*
 <factor>                ::= ( "!" | "-" ) <unary> | <primary>
-<primary>               ::= NUMBER | STRING | false | true
+<primary>               ::= NUMBER | STRING | IDENTIFIER | false | true
 ```

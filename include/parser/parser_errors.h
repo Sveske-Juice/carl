@@ -51,15 +51,17 @@ class ParserException : public std::exception {
 class SyntaxError : public ParserException {
     private:
         const Token token_;
+        const std::string msg_;
     public:
         SyntaxError(const Token token) : token_{token}, ParserException(token.sourceOffset(), token.length()) {}
+        SyntaxError(const Token token, std::string msg) : token_{token}, msg_{msg}, ParserException(token.sourceOffset(), token.length()) {}
 
         const ParserError error_code() const noexcept override {
             return ParserError::SYNTAX_ERROR;
         }
 
         const std::string what(std::string_view source) const noexcept override {
-            return std::string{locationPrefix(source) + " Syntax Error" + token_.literal() + "'"};
+            return std::string{locationPrefix(source) + " Syntax Error at '" + token_.literal() + "' " + msg_};
         }
 };
 

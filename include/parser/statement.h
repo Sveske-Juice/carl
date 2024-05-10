@@ -35,9 +35,13 @@ public:
         : ruleName_{ruleName}, pattern_{std::move(pattern)},
           replacement_{std::move(replacement)} {}
 
+    virtual void accept(IStatementVisitor &visitor) override {
+        visitor.visitDefineStatement(*this);
+    }
+
     std::string ruleName() const { return ruleName_; }
-    Expression& pattern() const { return *pattern_.get(); }
-    Expression& replacement() const { return *replacement_.get(); }
+    Expression &pattern() const { return *pattern_.get(); }
+    Expression &replacement() const { return *replacement_.get(); }
 };
 
 #endif

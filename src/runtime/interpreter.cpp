@@ -1,7 +1,7 @@
 #include "runtime/interpreter.h"
-#include "parser/statement.h"
 #include "lexer/token.h"
 #include "parser/expression.h"
+#include "parser/statement.h"
 #include "runtime/carl_object.h"
 #include "runtime/runtime_errors.h"
 #include <cstring>
@@ -9,32 +9,34 @@
 #include <iostream>
 #include <vector>
 
-Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements) : statements(std::move(_statements)) {}
+Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements)
+    : statements(std::move(_statements)) {}
 
 Interpreter::Interpreter(std::unique_ptr<Statement> _statement) {
     statements.push_back(std::move(_statement));
 }
 
-Value Interpreter::interpret() {
+std::optional<Value> Interpreter::interpret() {
     for (int i = 0; i < statements.size(); i++) {
         statements[i]->accept(*this);
-
-        // It should evaluate to only one value
-        assert(workingStack.size() == 1);
-        // std::cout << workingStack.top().toString() << std::endl;
-
-        // Keep last value for return
-        if (i != statements.size() - 1) {
-            workingStack.top().dispose();
-            workingStack.pop();
-        }
     }
+
+    // Statements might not produce a value
+    if (workingStack.size() == 0)
+        return {};
 
     return workingStack.top();
 }
 
-void Interpreter::visitExpressionStatement(ExpressionStatement& statement) {
+void Interpreter::visitExpressionStatement(ExpressionStatement &statement) {
     statement.expression().accept(*this);
+}
+
+void Interpreter::visitDefineStatement(DefineStatement &statement) {
+    std::cout << "name: " << statement.ruleName()
+              << ", pattern: " << statement.pattern().toString()
+              << ", replace: " << statement.replacement().toString()
+              << std::endl;
 }
 
 void Interpreter::visitLiteralExpression(LiteralExpression &expression) {

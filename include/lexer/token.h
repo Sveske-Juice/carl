@@ -10,6 +10,7 @@ static std::string TokenTypesToString[] = {
     "Number",
 
     "Identifier",
+    "Definition",
 
     "Plus",
     "Minus",
@@ -53,6 +54,7 @@ enum TokenType {
     NUMBER, // numbers
 
     IDENTIFIER, // variable, function, etc.
+    DEFINE,
 
     // Operands
     PLUS,     // +

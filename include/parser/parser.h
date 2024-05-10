@@ -19,9 +19,12 @@ class Parser {
         Token previous() const;
         Token peek() const;
 
-        std::unique_ptr<Statement> statement();
+        std::unique_ptr<Statement> definition();
         std::unique_ptr<Statement> defineStatement();
+
+        std::unique_ptr<Statement> statement();
         std::unique_ptr<Statement> expressionStatement();
+
         std::unique_ptr<Expression> expression();
         std::unique_ptr<Expression> equality();
         std::unique_ptr<Expression> comparison();

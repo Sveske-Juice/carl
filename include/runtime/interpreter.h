@@ -6,6 +6,7 @@
 #include "parser/statement.h"
 #include "runtime/carl_object.h"
 #include <memory>
+#include <optional>
 #include <stack>
 #include <vector>
 
@@ -21,8 +22,9 @@ private:
 public:
     Interpreter(std::unique_ptr<Statement> _statement);
     Interpreter(std::vector<std::unique_ptr<Statement>> _statements);
-    Value interpret();
+    std::optional<Value> interpret();
     virtual void visitExpressionStatement(ExpressionStatement& statement) override;
+    virtual void visitDefineStatement(DefineStatement& statement) override;
     virtual void visitLiteralExpression(LiteralExpression &expression) override;
     virtual void visitBinaryExpression(BinaryExpression &expression) override;
     virtual void visitUnaryExpression(UnaryExpression &expression) override;
