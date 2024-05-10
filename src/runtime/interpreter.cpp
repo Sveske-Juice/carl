@@ -7,6 +7,7 @@
 #include <cstring>
 #include <fmt/core.h>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 Interpreter::Interpreter(std::vector<std::unique_ptr<Statement>> _statements)
@@ -33,7 +34,10 @@ void Interpreter::visitExpressionStatement(ExpressionStatement &statement) {
 }
 
 void Interpreter::visitDefineStatement(DefineStatement &statement) {
-    std::cout << "name: " << statement.ruleName()
+    // NOTE: this invalidates the statement since we move the pattern & replacement. Is this okay?
+    std::unique_ptr<Rule> newDefinition = std::make_unique<Rule>(statement.pattern(), statement.replacement());
+    environment.addDefinition(statement.ruleName(), std::move(newDefinition));
+    std::cout << "Added new rule: name: " << statement.ruleName()
               << ", pattern: " << statement.pattern().toString()
               << ", replace: " << statement.replacement().toString()
               << std::endl;

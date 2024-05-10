@@ -5,6 +5,7 @@
 #include "parser/istatement_visitor.h"
 #include "parser/statement.h"
 #include "runtime/carl_object.h"
+#include "runtime/environment.h"
 #include <memory>
 #include <optional>
 #include <stack>
@@ -16,6 +17,7 @@
 
 class Interpreter : public IStatementVisitor, IExpressionVisitor {
 private:
+    Environment environment;
     std::vector<std::unique_ptr<Statement>> statements;
     std::stack<Value> workingStack;
 
