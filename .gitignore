@@ -34,3 +34,5 @@
 .cache/
 build/
 compile_commands.json
+# Keep docs on local machine
+docs/
