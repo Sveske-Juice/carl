@@ -10,18 +10,21 @@
 std::vector<std::unique_ptr<Statement>> Parser::parse() {
     std::vector<std::unique_ptr<Statement>> statements;
     while (!isAtEnd()) {
-        statements.push_back(ruleApply());
+        statements.push_back(command());
     }
 
     return statements;
 }
 
-std::unique_ptr<Statement> Parser::ruleApply() {
+std::unique_ptr<Statement> Parser::command() {
     if (matchAny({TokenType::APPLY})) {
         return applyStatement();
     }
+    else if (matchAny({TokenType::DEFINE})) {
+        return defineStatement();
+    }
 
-    return definition();
+    return statement();
 }
 
 std::unique_ptr<Statement> Parser::applyStatement() {
@@ -37,13 +40,6 @@ std::unique_ptr<Statement> Parser::applyStatement() {
         throw MissingTerminator(previous());
 
     return std::make_unique<ApplyStatement>(ruleName.literal(), std::move(expr));
-}
-
-std::unique_ptr<Statement> Parser::definition() {
-    if (matchAny({TokenType::DEFINE})) {
-        return defineStatement();
-    }
-    return statement();
 }
 
 std::unique_ptr<Statement> Parser::defineStatement() {

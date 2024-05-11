@@ -5,11 +5,10 @@
 ```ebnf
 <program>               ::= <statement>* EOF
 
-<ruleApply>             ::= <applyStatement> | <definition>
+<command>               ::= <applyStatement> | <defineStatement> | <statement>
 <applyStatement>        ::= "apply" IDENTIFIER ":" <expression> ";"
-
-<definition>            ::= <defineStatement> | <statement>
 <defineStatement>       ::= "define" IDENTIFIER "->" <expression> "=" <expression> ";"
+
 <statement>             ::= <expressionStatement> ";"
 <expressionStatement>   ::= <expression>
 
