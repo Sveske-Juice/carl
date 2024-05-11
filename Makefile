@@ -15,8 +15,11 @@ tests:
 	ln -sf '$(ROOT_DIR)/build/compile_commands.json' '$(ROOT_DIR)/compile_commands.json' && \
 	make tests
 
-docs:
+docs: clean_docs
 	doxygen Doxyfile
+
+clean_docs:
+	rm -rf docs/
 
 clean:
 	rm -rf build/
