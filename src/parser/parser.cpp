@@ -17,14 +17,31 @@ std::vector<std::unique_ptr<Statement>> Parser::parse() {
 }
 
 std::unique_ptr<Statement> Parser::command() {
-    if (matchAny({TokenType::APPLY})) {
-        return applyStatement();
-    }
-    else if (matchAny({TokenType::DEFINE})) {
-        return defineStatement();
+    switch (peek().type()) {
+        case DEFINE:
+            consume();
+            return defineStatement();
+        case APPLY:
+            consume();
+            return applyStatement();
+        case SHOW:
+            consume();
+            return showStatement();
+
+        default: // Not a command, fall down to statement
+            break;
     }
 
     return statement();
+}
+
+std::unique_ptr<Statement> Parser::showStatement() {
+    std::unique_ptr<Expression> expr = expression();
+
+    if (!matchAny({TokenType::SEMICOLON}))
+        throw MissingTerminator(previous());
+
+    return std::make_unique<ShowStatement>(std::move(expr));
 }
 
 std::unique_ptr<Statement> Parser::applyStatement() {

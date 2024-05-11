@@ -61,4 +61,17 @@ public:
     std::unique_ptr<Expression> borrowExpression() { return std::move(expression_); }
 };
 
+class ShowStatement : public Statement {
+    private:
+        std::unique_ptr<Expression> expression_;
+    public:
+        ShowStatement(std::unique_ptr<Expression> expression) : expression_{std::move(expression)} {}
+
+        virtual void accept(IStatementVisitor &visitor) override {
+            visitor.visitShowStatement(*this);
+        }
+
+        Expression &expression() const { return *expression_.get(); }
+};
+
 #endif

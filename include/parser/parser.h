@@ -21,8 +21,8 @@ class Parser {
 
         std::unique_ptr<Statement> command();
         std::unique_ptr<Statement> applyStatement();
-
         std::unique_ptr<Statement> defineStatement();
+        std::unique_ptr<Statement> showStatement();
 
         std::unique_ptr<Statement> statement();
         std::unique_ptr<Statement> expressionStatement();

@@ -1,5 +1,6 @@
 #include "runtime/interpreter.h"
 #include "lexer/token.h"
+#include "parser/ast_printer.h"
 #include "parser/expression.h"
 #include "parser/statement.h"
 #include "runtime/carl_object.h"
@@ -59,6 +60,12 @@ void Interpreter::visitApplyStatement(ApplyStatement& statement) {
     ExpressionRewriter rewriter;
     auto result = rewriter.substitute(statement.borrowExpression(), definition->second->borrowPattern(), definition->second->borrowReplacement());
     std::cout << "\t# " << result->toString() << std::endl;
+}
+
+
+void Interpreter::visitShowStatement(ShowStatement& statement) {
+    AstPrinter printer;
+    std::cout << "\t# " << printer.print(statement.expression()) << std::endl;
 }
 
 void Interpreter::visitLiteralExpression(LiteralExpression &expression) {

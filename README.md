@@ -6,6 +6,7 @@
 <program>               ::= <statement>* EOF
 
 <command>               ::= <applyStatement> | <defineStatement> | <statement>
+<showStatement>         ::= "show" <expression> ";"
 <applyStatement>        ::= "apply" IDENTIFIER ":" <expression> ";"
 <defineStatement>       ::= "define" IDENTIFIER "->" <expression> "=" <expression> ";"
 

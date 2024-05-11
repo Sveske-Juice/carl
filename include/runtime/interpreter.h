@@ -30,6 +30,7 @@ public:
     virtual void visitExpressionStatement(ExpressionStatement& statement) override;
     virtual void visitDefineStatement(DefineStatement& statement) override;
     virtual void visitApplyStatement(ApplyStatement& statement) override;
+    virtual void visitShowStatement(ShowStatement& statement) override;
     virtual void visitLiteralExpression(LiteralExpression &expression) override;
     virtual void visitBinaryExpression(BinaryExpression &expression) override;
     virtual void visitUnaryExpression(UnaryExpression &expression) override;
