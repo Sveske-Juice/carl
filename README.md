@@ -1,5 +1,12 @@
 # Carl
 
+# Build
+`make` to build main `carl` executable
+
+`make tests` for unit tests
+
+`make docs` for Doxygen documentation
+
 ## BNF of language
 
 ```ebnf
