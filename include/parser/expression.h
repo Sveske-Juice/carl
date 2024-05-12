@@ -4,6 +4,7 @@
 #include "lexer/token.h"
 #include "parser/iexpression_visitor.h"
 
+#include <algorithm>
 #include <exception>
 #include <fmt/core.h>
 #include <memory>
@@ -44,6 +45,7 @@ class Expression {
         virtual ExpressionType expressionType() const = 0;
         virtual void accept(IExpressionVisitor& visitor) = 0;
         virtual std::string toString() const = 0;
+        virtual std::unique_ptr<Expression> clone() const = 0;
 };
 
 // Concrete expressions
@@ -67,6 +69,9 @@ class LiteralExpression : public Expression {
                 default:
                       throw std::exception(); // TODO: handle
             }
+        }
+        virtual std::unique_ptr<Expression> clone() const override {
+            return std::make_unique<LiteralExpression>(*this);
         }
         std::string literal() const { return literal_; }
         TokenType type() const { return literalType_; }
@@ -108,6 +113,13 @@ class BinaryExpression : public Expression {
                     throw std::exception(); // TODO: handle
             }
         }
+
+        virtual std::unique_ptr<Expression> clone() const override {
+            auto leftCopy = left_->clone();
+            auto rightCopy = right_->clone();
+            return std::make_unique<BinaryExpression>(std::move(leftCopy), op_, std::move(rightCopy));
+        }
+
         Expression& left() { return *left_; }
         Token& op() { return op_; }
         Expression& right() { return *right_; }
@@ -140,6 +152,12 @@ class UnaryExpression : public Expression {
                     throw std::exception(); // TODO: handle
             }
         }
+
+        virtual std::unique_ptr<Expression> clone() const override {
+            auto operandCopy = operand_->clone();
+            return std::make_unique<UnaryExpression>(op_, std::move(operandCopy));
+        }
+
         Token& op() { return op_; }
         Expression& operand() { return *operand_; }
         void setOperand(std::unique_ptr<Expression> value) { operand_ = std::move(value); operand_->parent = this; }

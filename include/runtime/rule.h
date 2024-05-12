@@ -18,8 +18,12 @@ public:
         : pattern_{std::unique_ptr<Expression>(&pattern)},
           replacement_{std::unique_ptr<Expression>(&replacement)} {}
 
-    std::unique_ptr<Expression> borrowPattern() { return std::move(pattern_); }
-    std::unique_ptr<Expression> borrowReplacement() { return std::move(replacement_); }
+    std::unique_ptr<Expression> copyPattern() const {
+        return pattern_->clone();
+    }
+    std::unique_ptr<Expression> copyReplacement() const {
+        return replacement_->clone();
+    }
 };
 
 #endif
