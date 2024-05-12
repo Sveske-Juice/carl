@@ -62,6 +62,22 @@ TEST_CASE("Parser Unary", "[Parser:Unary]") {
         CHECK(out == "-69");
     }
 
+    SECTION("Single Unary 2") {
+        AstPrinter printer;
+        std::vector<Token> lexemes = {
+            Token(TokenType::BANG, 0, 1, "!"),
+            Token(TokenType::TRUE, 0, 4, "true"),
+            Token(TokenType::SEMICOLON, 0, 1, ";"),
+            Token(TokenType::END_OF_FILE, 0, 1, "\0"),
+        };
+        Parser parser{lexemes};
+        auto statement = std::move(parser.parse()[0]);
+        Expression& expression = dynamic_cast<ExpressionStatement *>(statement.get())->expression();
+        std::string out = printer.print(expression);
+
+        CHECK(out == "!true");
+    }
+
     SECTION("Multiple Unary") {
         for (int i = 1; i < 69; i++) {
             AstPrinter printer;

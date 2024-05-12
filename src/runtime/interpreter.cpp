@@ -58,8 +58,9 @@ void Interpreter::visitApplyStatement(ApplyStatement& statement) {
         throw NoRuleFound(Token(TokenType::APPLY, 0, 5, "apply"), "Definition '" + statement.ruleName() + "' is not defined");
     }
     ExpressionRewriter rewriter;
-    auto result = rewriter.substitute(statement.borrowExpression(), definition->second->copyPattern(), definition->second->copyReplacement());
-    std::cout << "\t# " << result->toString() << std::endl;
+    auto res = rewriter.substitute(statement.borrowExpression(), definition->second->copyPattern(), definition->second->copyReplacement());
+    this->result = res->toString();
+    std::cout << "\t# " << res->toString() << std::endl;
 }
 
 

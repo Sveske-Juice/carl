@@ -22,6 +22,7 @@ private:
     std::stack<Value> workingStack;
 
 public:
+    std::string result; // TODO: move this to value returned by interpret();
     Interpreter();
     Interpreter(std::unique_ptr<Statement> _statement);
     Interpreter(std::vector<std::unique_ptr<Statement>> _statements);
