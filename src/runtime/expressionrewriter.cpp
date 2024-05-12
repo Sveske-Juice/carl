@@ -28,8 +28,6 @@ ExpressionRewriter::substitute(std::unique_ptr<Expression> rootSource,
     if (!match)
         return rootSource;
 
-    state = RESOLVING_REPLACEMNT;
-
     // Resolve all symbols in this->replacement to the corresponding found in the
     // source
     this->replacement->accept(*this);
@@ -112,24 +110,10 @@ void ExpressionRewriter::checkForMatch() {
         case EXPR_MINUS:
         case EXPR_MULTIPLICATION:
         case EXPR_DIVISION:
-        case EXPR_MODULU: {
+        case EXPR_MODULU:
+        case EXPR_NEGATE: {
             if (sourcePostfixStack[sourceIdx]->expressionType() !=
                 patternPostfixStack[patternIdx]->expressionType())
-                return;
-
-            continue;
-        }
-
-        case EXPR_NEGATE: {
-            // Verify that they have the same operator
-            UnaryExpression *patternUnaryOp =
-                static_cast<UnaryExpression *>(patternPostfixStack[patternIdx]);
-
-            UnaryExpression *sourceUnaryOp =
-                dynamic_cast<UnaryExpression *>(sourcePostfixStack[sourceIdx]);
-            if (!sourceUnaryOp)
-                return;
-            if (sourceUnaryOp->op().type() != patternUnaryOp->op().type())
                 return;
 
             continue;
@@ -140,7 +124,7 @@ void ExpressionRewriter::checkForMatch() {
         }
     }
 
-    // If we get to here, it means that the pattern matches at this point
+    // If we've not returned out of the function by now, then its a match
     replacementNode = sourcePostfixStack.back();
     replacementParent = replacementNode->parent;
     match = true;

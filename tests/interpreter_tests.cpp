@@ -16,10 +16,10 @@ TEST_CASE("Intepreter Literal tests", "[Intepreter:Literal]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(l));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        CHECK(res.type == ValueType::VALUE_BOOL);
-        CHECK(res.number == 1.0);
-        res.dispose();
+        auto res = interpreter.interpret();
+        CHECK(res.value().type == ValueType::VALUE_BOOL);
+        CHECK(res.value().number == 1.0);
+        res.value().dispose();
     }
     SECTION("False") {
         std::unique_ptr<Expression> l =
@@ -27,10 +27,10 @@ TEST_CASE("Intepreter Literal tests", "[Intepreter:Literal]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(l));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        CHECK(res.type == ValueType::VALUE_BOOL);
-        CHECK(res.number == 0.0);
-        res.dispose();
+        auto res = interpreter.interpret();
+        CHECK(res.value().type == ValueType::VALUE_BOOL);
+        CHECK(res.value().number == 0.0);
+        res.value().dispose();
     }
     SECTION("Number") {
         std::unique_ptr<Expression> l =
@@ -38,10 +38,10 @@ TEST_CASE("Intepreter Literal tests", "[Intepreter:Literal]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(l));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        CHECK(res.type == ValueType::VALUE_NUMBER);
-        CHECK(res.number == 69.0);
-        res.dispose();
+        auto res = interpreter.interpret();
+        CHECK(res.value().type == ValueType::VALUE_NUMBER);
+        CHECK(res.value().number == 69.0);
+        res.value().dispose();
     }
 
     // Object literals
@@ -51,13 +51,13 @@ TEST_CASE("Intepreter Literal tests", "[Intepreter:Literal]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(l));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        CHECK(res.type == ValueType::VALUE_OBJ);
+        auto res = interpreter.interpret();
+        CHECK(res.value().type == ValueType::VALUE_OBJ);
 
-        CHECK(res.obj->objType == ObjectType::OBJ_STRING);
-        const char *is = reinterpret_cast<ObjString *>(res.obj)->chars;
+        CHECK(res.value().obj->objType == ObjectType::OBJ_STRING);
+        const char *is = reinterpret_cast<ObjString *>(res.value().obj)->chars;
         CHECK(strcmp(is, "HEHEHEAW") == 0);
-        res.dispose();
+        res.value().dispose();
     }
 }
 
@@ -71,9 +71,9 @@ TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(u));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_NUMBER);
-        REQUIRE(res.number == -69.0);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.value().number == -69.0);
     }
 
     SECTION("Chained negates") {
@@ -90,10 +90,10 @@ TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
             std::unique_ptr<Statement> s =
                 std::make_unique<ExpressionStatement>(std::move(uFinal));
             Interpreter interpreter(std::move(s));
-            Value res = interpreter.interpret();
+            auto res = interpreter.interpret();
             double correct = i % 2 == 0 ? -69 : 69;
-            REQUIRE(res.type == ValueType::VALUE_NUMBER);
-            REQUIRE(res.number == correct);
+            REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+            REQUIRE(res.value().number == correct);
         }
     }
 
@@ -106,9 +106,9 @@ TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(u));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_BOOL);
-        REQUIRE(res.number == 0.0);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_BOOL);
+        REQUIRE(res.value().number == 0.0);
     }
 
     SECTION("NOT2") {
@@ -120,9 +120,9 @@ TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(u));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_BOOL);
-        REQUIRE(res.number == 1.0);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_BOOL);
+        REQUIRE(res.value().number == 1.0);
     }
 
     SECTION("Chained NUTS") {
@@ -139,10 +139,10 @@ TEST_CASE("Interpreter Unary Operations", "[Interpreter:Unary]") {
             std::unique_ptr<Statement> s =
                 std::make_unique<ExpressionStatement>(std::move(uFinal));
             Interpreter interpreter(std::move(s));
-            Value res = interpreter.interpret();
+            auto res = interpreter.interpret();
             double correct = i % 2 == 0 ? 0.0 : 1.0;
-            REQUIRE(res.type == ValueType::VALUE_BOOL);
-            REQUIRE(res.number == correct);
+            REQUIRE(res.value().type == ValueType::VALUE_BOOL);
+            REQUIRE(res.value().number == correct);
         }
     }
 }
@@ -159,9 +159,9 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(bin));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_NUMBER);
-        REQUIRE(res.number == 69 + 420);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.value().number == 69 + 420);
     }
 
     SECTION("Minus") {
@@ -175,9 +175,9 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(bin));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_NUMBER);
-        REQUIRE(res.number == 69 - 420);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.value().number == 69 - 420);
     }
 
     SECTION("Multiplication") {
@@ -191,9 +191,9 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(bin));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_NUMBER);
-        REQUIRE(res.number == 69 * 420);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.value().number == 69 * 420);
     }
 
     SECTION("Division") {
@@ -207,9 +207,9 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(bin));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_NUMBER);
-        REQUIRE(res.number == (double)69.0 / (double)420.0);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_NUMBER);
+        REQUIRE(res.value().number == (double)69.0 / (double)420.0);
     }
 
     SECTION("String Concat") {
@@ -223,10 +223,10 @@ TEST_CASE("Interpreter Binary Operations", "[Interpreter:Binary]") {
         std::unique_ptr<Statement> s =
             std::make_unique<ExpressionStatement>(std::move(bin));
         Interpreter interpreter(std::move(s));
-        Value res = interpreter.interpret();
-        REQUIRE(res.type == ValueType::VALUE_OBJ);
+        auto res = interpreter.interpret();
+        REQUIRE(res.value().type == ValueType::VALUE_OBJ);
 
-        ObjString *resultStr = reinterpret_cast<ObjString *>(res.obj);
+        ObjString *resultStr = reinterpret_cast<ObjString *>(res.value().obj);
         REQUIRE(strcmp("Hello World!", resultStr->chars) == 0);
     }
 }

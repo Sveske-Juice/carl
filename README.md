@@ -3,7 +3,7 @@
 ## BNF of language
 
 ```ebnf
-<program>               ::= <statement>* EOF
+<program>               ::= <command>* EOF
 
 <command>               ::= <applyStatement> | <defineStatement> | <statement>
 <showStatement>         ::= "show" <expression> ";"
