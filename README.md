@@ -12,7 +12,7 @@
 ```ebnf
 <program>               ::= <command>* EOF
 
-<command>               ::= <applyStatement> | <defineStatement> | <statement>
+<command>               ::= <showStatement> | <applyStatement> | <defineStatement> | <statement>
 <showStatement>         ::= "show" <expression> ";"
 <applyStatement>        ::= "apply" IDENTIFIER ":" <expression> ";"
 <defineStatement>       ::= "define" IDENTIFIER "->" <expression> "=" <expression> ";"
