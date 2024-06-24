@@ -1,4 +1,5 @@
-# Carl
+# Development moved
+Project moved to gitlab under the name 'openbirch': https://gitlab.com/Sveske-Juice/openbirch
 
 # Build
 `make` to build main `carl` executable
